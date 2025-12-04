@@ -1,0 +1,95 @@
+spring:
+  application:
+    name: discovery-server
+  profiles:
+    default: local
+
+server:
+  port: 8761
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+    eviction-interval-timer-in-ms: 5000
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: Discovery service for MediApp microservices.
+    version: ${project.version:0.0.1-SNAPSHOT}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+logging:
+  level:
+    com.netflix.discovery: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+eureka:
+  instance:
+    hostname: discovery-server
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_DEFAULT_ZONE_HOST:${eureka.instance.hostname}}:${EUREKA_DEFAULT_ZONE_PORT:${server.port}}/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+eureka:
+  instance:
+    hostname: ${DISCOVERY_SERVER_HOST:${eureka.instance.hostname}}
+  client:
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://${eureka.instance.hostname}:${server.port}/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized

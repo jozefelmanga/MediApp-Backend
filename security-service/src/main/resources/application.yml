@@ -1,0 +1,135 @@
+spring:
+  application:
+    name: security-service
+  profiles:
+    default: local
+  datasource:
+    url: jdbc:h2:mem:securitydb;MODE=PostgreSQL;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jackson:
+#    serialization:
+#      WRITE_DATES_AS_TIMESTAMPS: false
+
+server:
+  port: 8081
+
+security:
+  jwt:
+    issuer: https://mediapp.local/security
+    access-token-ttl: PT15M
+    refresh-token-ttl: P7D
+  bootstrap:
+    admin:
+      email: admin@mediapp.local
+      password: ChangeMe123!
+      roles: ADMIN
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  level:
+    com.mediapp.security_service: DEBUG
+    org.springframework.security: INFO
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      app-type: security-service
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+  datasource:
+    url: jdbc:postgresql://${SECURITY_DB_HOST:security-db}:${SECURITY_DB_PORT:5432}/${SECURITY_DB_NAME:security_db}
+    driver-class-name: org.postgresql.Driver
+    username: ${SECURITY_DB_USERNAME:security_user}
+    password: ${SECURITY_DB_PASSWORD:security_pass}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${DISCOVERY_SERVER_HOST:discovery-server}:${DISCOVERY_SERVER_PORT:8761}/eureka
+
+logging:
+  level:
+    com.mediapp.security_service: INFO
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:postgresql://${SECURITY_DB_HOST}/${SECURITY_DB_NAME}
+    driver-class-name: org.postgresql.Driver
+    username: ${SECURITY_DB_USERNAME}
+    password: ${SECURITY_DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          log.warnings: true
+  h2:
+    console:
+      enabled: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+      roles: ACTUATOR_ADMIN
+
+security:
+  bootstrap:
+    admin:
+      password: ${SECURITY_ADMIN_PASSWORD:ChangeMe123!}
+
+logging:
+  level:
+    com.mediapp.security_service: WARN
