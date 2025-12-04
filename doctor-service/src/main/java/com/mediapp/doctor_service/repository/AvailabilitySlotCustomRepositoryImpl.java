@@ -1,11 +1,9 @@
 package com.mediapp.doctor_service.repository;
 
-import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.UUID;
 
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
@@ -30,7 +28,7 @@ public class AvailabilitySlotCustomRepositoryImpl implements AvailabilitySlotCus
     }
 
     @Override
-    public Mono<Boolean> existsOverlappingSlot(UUID doctorId, Instant startTime, Instant endTime) {
+    public Mono<Boolean> existsOverlappingSlot(String doctorId, Instant startTime, Instant endTime) {
         String sql = """
                 SELECT EXISTS (
                     SELECT 1
@@ -51,7 +49,7 @@ public class AvailabilitySlotCustomRepositoryImpl implements AvailabilitySlotCus
     }
 
     @Override
-    public Mono<AvailabilitySlotEntity> reserveSlot(UUID slotId, String reservationToken, Instant reservedAt) {
+    public Mono<AvailabilitySlotEntity> reserveSlot(String slotId, String reservationToken, Instant reservedAt) {
         String updateSql = """
                 UPDATE availability_slot
                    SET is_reserved = TRUE,
@@ -77,7 +75,7 @@ public class AvailabilitySlotCustomRepositoryImpl implements AvailabilitySlotCus
                 .flatMap(count -> count != null && count > 0 ? fetchSlot(slotId) : Mono.empty());
     }
 
-    private Mono<AvailabilitySlotEntity> fetchSlot(UUID slotId) {
+    private Mono<AvailabilitySlotEntity> fetchSlot(String slotId) {
         String selectSql = """
                 SELECT slot_id, doctor_id, start_time, end_time, is_reserved, reservation_token, reserved_at, version,
                        created_at, updated_at
@@ -93,8 +91,8 @@ public class AvailabilitySlotCustomRepositoryImpl implements AvailabilitySlotCus
 
     private AvailabilitySlotEntity mapRowToSlot(Row row, RowMetadata metadata) {
         return AvailabilitySlotEntity.builder()
-                .id(readUuid(row.get("slot_id")))
-                .doctorId(readUuid(row.get("doctor_id")))
+                .id(row.get("slot_id", String.class))
+                .doctorId(row.get("doctor_id", String.class))
                 .startTime(readInstant(row.get("start_time")))
                 .endTime(readInstant(row.get("end_time")))
                 .reserved(readBoolean(row.get("is_reserved")))
@@ -147,24 +145,5 @@ public class AvailabilitySlotCustomRepositoryImpl implements AvailabilitySlotCus
             return number.longValue();
         }
         throw new IllegalArgumentException("Unsupported numeric representation: " + value.getClass());
-    }
-
-    private UUID readUuid(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof UUID uuid) {
-            return uuid;
-        }
-        if (value instanceof String string) {
-            return UUID.fromString(string);
-        }
-        if (value instanceof byte[] bytes && bytes.length == 16) {
-            ByteBuffer buffer = ByteBuffer.wrap(bytes);
-            long high = buffer.getLong();
-            long low = buffer.getLong();
-            return new UUID(high, low);
-        }
-        throw new IllegalArgumentException("Unsupported UUID representation: " + value.getClass());
     }
 }

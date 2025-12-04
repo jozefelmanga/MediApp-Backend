@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +20,7 @@ import com.mediapp.user_service.api.dto.PatientProfileDto;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientSummaryDto;
 import com.mediapp.user_service.api.dto.UserDetailsResponse;
+import com.mediapp.user_service.client.DoctorServiceClient;
 import com.mediapp.user_service.domain.AppUser;
 import com.mediapp.user_service.domain.PatientProfile;
 import com.mediapp.user_service.domain.UserRole;
@@ -35,19 +38,24 @@ import jakarta.validation.constraints.NotNull;
 @Transactional(readOnly = true)
 public class UserManagementService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserManagementService.class);
+
     private final AppUserRepository appUserRepository;
     private final PatientProfileRepository patientProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final AdminTokenValidator adminTokenValidator;
+    private final DoctorServiceClient doctorServiceClient;
 
     public UserManagementService(AppUserRepository appUserRepository,
             PatientProfileRepository patientProfileRepository,
             PasswordEncoder passwordEncoder,
-            AdminTokenValidator adminTokenValidator) {
+            AdminTokenValidator adminTokenValidator,
+            DoctorServiceClient doctorServiceClient) {
         this.appUserRepository = appUserRepository;
         this.patientProfileRepository = patientProfileRepository;
         this.passwordEncoder = passwordEncoder;
         this.adminTokenValidator = adminTokenValidator;
+        this.doctorServiceClient = doctorServiceClient;
     }
 
     @Transactional
@@ -72,6 +80,15 @@ public class UserManagementService {
 
         AppUser user = persistUser(request.email(), request.password(), request.firstName(), request.lastName(),
                 UserRole.DOCTOR);
+
+        // Sync with doctor-service to create the doctor profile
+        log.info("Syncing doctor profile with doctor-service for userId: {}", user.getId());
+        doctorServiceClient.createDoctorProfileAsync(
+                user.getId(),
+                request.medicalLicenseNumber(),
+                request.specialtyId(),
+                request.officeAddress());
+
         return toUserDetails(user);
     }
 

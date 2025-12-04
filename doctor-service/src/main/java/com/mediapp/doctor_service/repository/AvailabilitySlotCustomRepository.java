@@ -1,7 +1,6 @@
 package com.mediapp.doctor_service.repository;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import com.mediapp.doctor_service.domain.AvailabilitySlotEntity;
 
@@ -12,7 +11,7 @@ import reactor.core.publisher.Mono;
  */
 public interface AvailabilitySlotCustomRepository {
 
-    Mono<Boolean> existsOverlappingSlot(UUID doctorId, Instant startTime, Instant endTime);
+    Mono<Boolean> existsOverlappingSlot(String doctorId, Instant startTime, Instant endTime);
 
-    Mono<AvailabilitySlotEntity> reserveSlot(UUID slotId, String reservationToken, Instant reservedAt);
+    Mono<AvailabilitySlotEntity> reserveSlot(String slotId, String reservationToken, Instant reservedAt);
 }

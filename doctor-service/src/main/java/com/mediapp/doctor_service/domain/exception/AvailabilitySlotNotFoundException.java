@@ -1,7 +1,5 @@
 package com.mediapp.doctor_service.domain.exception;
 
-import java.util.UUID;
-
 import com.mediapp.common.error.DomainException;
 
 /**
@@ -9,7 +7,7 @@ import com.mediapp.common.error.DomainException;
  */
 public class AvailabilitySlotNotFoundException extends DomainException {
 
-    public AvailabilitySlotNotFoundException(UUID slotId) {
+    public AvailabilitySlotNotFoundException(String slotId) {
         super(DoctorErrorCode.AVAILABILITY_NOT_FOUND,
                 "Availability slot %s not found".formatted(slotId));
     }

@@ -1,7 +1,6 @@
 package com.mediapp.doctor_service.repository;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -15,9 +14,9 @@ import reactor.core.publisher.Flux;
  */
 @Repository
 public interface AvailabilitySlotRepository
-        extends ReactiveCrudRepository<AvailabilitySlotEntity, UUID>, AvailabilitySlotCustomRepository {
+                extends ReactiveCrudRepository<AvailabilitySlotEntity, String>, AvailabilitySlotCustomRepository {
 
-    Flux<AvailabilitySlotEntity> findByDoctorIdAndStartTimeBetweenOrderByStartTimeAsc(UUID doctorId,
-            Instant startTime,
-            Instant endTime);
+        Flux<AvailabilitySlotEntity> findByDoctorIdAndStartTimeBetweenOrderByStartTimeAsc(String doctorId,
+                        Instant startTime,
+                        Instant endTime);
 }

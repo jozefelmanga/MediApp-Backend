@@ -27,7 +27,7 @@ class AvailabilitySlotGeneratorTest {
 
     @Test
     void generate_shouldCreateSlotsForRequestedDays() {
-        UUID doctorId = UUID.randomUUID();
+        String doctorId = UUID.randomUUID().toString();
         CreateAvailabilityRequest request = CreateAvailabilityRequest.builder()
                 .startDate(LocalDate.of(2025, 1, 6))
                 .endDate(LocalDate.of(2025, 1, 13))

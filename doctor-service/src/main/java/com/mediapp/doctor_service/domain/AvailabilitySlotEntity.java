@@ -1,7 +1,6 @@
 package com.mediapp.doctor_service.domain;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Version;
@@ -25,10 +24,10 @@ public class AvailabilitySlotEntity {
 
     @Id
     @Column("slot_id")
-    private UUID id;
+    private String id;
 
     @Column("doctor_id")
-    private UUID doctorId;
+    private String doctorId;
 
     @Column("start_time")
     private Instant startTime;

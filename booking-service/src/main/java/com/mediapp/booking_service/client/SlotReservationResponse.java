@@ -6,10 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * DTO representing a slot update response from doctor-service.
+ * Uses String for IDs since doctor-service returns String IDs.
  */
 @Data
 @NoArgsConstructor
@@ -17,8 +17,8 @@ import java.util.UUID;
 @Builder
 public class SlotReservationResponse {
 
-    private UUID slotId;
-    private UUID doctorId;
+    private String slotId;
+    private String doctorId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean reserved;

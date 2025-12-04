@@ -1,9 +1,10 @@
 package com.mediapp.doctor_service.domain;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -20,11 +21,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("doctor_profile")
-public class DoctorProfileEntity {
+public class DoctorProfileEntity implements Persistable<String> {
 
     @Id
     @Column("doctor_id")
-    private UUID id;
+    private String id;
 
     @Column("medical_license_number")
     private String medicalLicenseNumber;
@@ -40,4 +41,13 @@ public class DoctorProfileEntity {
 
     @Column("updated_at")
     private Instant updatedAt;
+
+    @Transient
+    @Builder.Default
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
 }

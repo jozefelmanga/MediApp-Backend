@@ -1,7 +1,6 @@
 package com.mediapp.doctor_service.api.dto;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import lombok.Builder;
 
@@ -10,9 +9,9 @@ import lombok.Builder;
  */
 @Builder
 public record AvailabilitySlotResponse(
-        UUID slotId,
-        UUID doctorId,
-        Instant startTime,
-        Instant endTime,
-        boolean reserved) {
+                String slotId,
+                String doctorId,
+                Instant startTime,
+                Instant endTime,
+                boolean reserved) {
 }

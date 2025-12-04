@@ -30,7 +30,7 @@ public class AvailabilitySlotGenerator {
         this.clock = clock;
     }
 
-    public List<AvailabilitySlotEntity> generate(UUID doctorId, CreateAvailabilityRequest request) {
+    public List<AvailabilitySlotEntity> generate(String doctorId, CreateAvailabilityRequest request) {
         ZoneId zoneId = resolveZoneId(request.timeZone());
         LocalDate currentDate = request.startDate();
         LocalDate endDate = request.endDate();
@@ -54,7 +54,7 @@ public class AvailabilitySlotGenerator {
                     ZonedDateTime endDateTime = ZonedDateTime.of(currentDate, slotEnd, zoneId);
 
                     slots.add(AvailabilitySlotEntity.builder()
-                            .id(UUID.randomUUID())
+                            .id(UUID.randomUUID().toString())
                             .doctorId(doctorId)
                             .startTime(startDateTime.toInstant())
                             .endTime(endDateTime.toInstant())

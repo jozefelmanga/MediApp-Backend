@@ -39,182 +39,188 @@ import com.mediapp.user_service.domain.exception.UserDomainException;
 import com.mediapp.user_service.domain.exception.UserErrorCode;
 import com.mediapp.user_service.repository.AppUserRepository;
 import com.mediapp.user_service.repository.PatientProfileRepository;
+import com.mediapp.user_service.client.DoctorServiceClient;
 
 @ExtendWith(MockitoExtension.class)
 class UserManagementServiceTest {
 
-    @Mock
-    private AppUserRepository appUserRepository;
+        @Mock
+        private AppUserRepository appUserRepository;
 
-    @Mock
-    private PatientProfileRepository patientProfileRepository;
+        @Mock
+        private PatientProfileRepository patientProfileRepository;
 
-    @Mock
-    private PasswordEncoder passwordEncoder;
+        @Mock
+        private PasswordEncoder passwordEncoder;
 
-    @Mock
-    private AdminTokenValidator adminTokenValidator;
+        @Mock
+        private AdminTokenValidator adminTokenValidator;
 
-    @InjectMocks
-    private UserManagementService userManagementService;
+        @Mock
+        private DoctorServiceClient doctorServiceClient;
 
-    @Captor
-    private ArgumentCaptor<AppUser> userCaptor;
+        @InjectMocks
+        private UserManagementService userManagementService;
 
-    @Captor
-    private ArgumentCaptor<PatientProfile> patientProfileCaptor;
+        @Captor
+        private ArgumentCaptor<AppUser> userCaptor;
 
-    private PatientRegistrationRequest patientRegistrationRequest;
+        @Captor
+        private ArgumentCaptor<PatientProfile> patientProfileCaptor;
 
-    @BeforeEach
-    void setUp() {
-        patientRegistrationRequest = new PatientRegistrationRequest(
-                "user@example.com",
-                "Password9",
-                "Jane",
-                "Doe",
-                "5551234567",
-                LocalDate.of(1995, 5, 12));
-    }
+        private PatientRegistrationRequest patientRegistrationRequest;
 
-    @Test
-    void registerPatient_shouldPersistUserAndProfile() {
-        UUID userId = UUID.randomUUID();
-        when(appUserRepository.existsByEmailIgnoreCase(patientRegistrationRequest.email())).thenReturn(false);
-        when(passwordEncoder.encode(patientRegistrationRequest.password())).thenReturn("encoded-pass");
+        @BeforeEach
+        void setUp() {
+                patientRegistrationRequest = new PatientRegistrationRequest(
+                                "user@example.com",
+                                "Password9",
+                                "Jane",
+                                "Doe",
+                                "5551234567",
+                                LocalDate.of(1995, 5, 12));
+        }
 
-        AppUser savedUser = AppUser.builder()
-                .id(userId)
-                .email(patientRegistrationRequest.email().toLowerCase())
-                .passwordHash("encoded-pass")
-                .firstName(patientRegistrationRequest.firstName())
-                .lastName(patientRegistrationRequest.lastName())
-                .role(UserRole.PATIENT)
-                .build();
+        @Test
+        void registerPatient_shouldPersistUserAndProfile() {
+                UUID userId = UUID.randomUUID();
+                when(appUserRepository.existsByEmailIgnoreCase(patientRegistrationRequest.email())).thenReturn(false);
+                when(passwordEncoder.encode(patientRegistrationRequest.password())).thenReturn("encoded-pass");
 
-        when(appUserRepository.save(any(AppUser.class))).thenReturn(savedUser);
+                AppUser savedUser = AppUser.builder()
+                                .id(userId)
+                                .email(patientRegistrationRequest.email().toLowerCase())
+                                .passwordHash("encoded-pass")
+                                .firstName(patientRegistrationRequest.firstName())
+                                .lastName(patientRegistrationRequest.lastName())
+                                .role(UserRole.PATIENT)
+                                .build();
 
-        PatientProfile savedProfile = PatientProfile.builder()
-                .id(userId)
-                .user(savedUser)
-                .phoneNumber(patientRegistrationRequest.phoneNumber())
-                .dateOfBirth(patientRegistrationRequest.dateOfBirth())
-                .build();
-        when(patientProfileRepository.save(any(PatientProfile.class))).thenReturn(savedProfile);
+                when(appUserRepository.save(any(AppUser.class))).thenReturn(savedUser);
 
-        UserDetailsResponse response = userManagementService.registerPatient(patientRegistrationRequest);
+                PatientProfile savedProfile = PatientProfile.builder()
+                                .id(userId)
+                                .user(savedUser)
+                                .phoneNumber(patientRegistrationRequest.phoneNumber())
+                                .dateOfBirth(patientRegistrationRequest.dateOfBirth())
+                                .build();
+                when(patientProfileRepository.save(any(PatientProfile.class))).thenReturn(savedProfile);
 
-        verify(appUserRepository).save(userCaptor.capture());
-        verify(patientProfileRepository).save(patientProfileCaptor.capture());
+                UserDetailsResponse response = userManagementService.registerPatient(patientRegistrationRequest);
 
-        AppUser persistedUser = userCaptor.getValue();
-        assertThat(persistedUser.getRole()).isEqualTo(UserRole.PATIENT);
-        assertThat(persistedUser.getEmail()).isEqualTo("user@example.com");
-        assertThat(response.patientProfile()).isNotNull();
-        assertThat(response.patientProfile().patientId()).isEqualTo(userId);
-        assertThat(patientProfileCaptor.getValue().getUser()).isEqualTo(savedUser);
-    }
+                verify(appUserRepository).save(userCaptor.capture());
+                verify(patientProfileRepository).save(patientProfileCaptor.capture());
 
-    @Test
-    void registerPatient_shouldRejectDuplicateEmail() {
-        when(appUserRepository.existsByEmailIgnoreCase(patientRegistrationRequest.email())).thenReturn(true);
+                AppUser persistedUser = userCaptor.getValue();
+                assertThat(persistedUser.getRole()).isEqualTo(UserRole.PATIENT);
+                assertThat(persistedUser.getEmail()).isEqualTo("user@example.com");
+                assertThat(response.patientProfile()).isNotNull();
+                assertThat(response.patientProfile().patientId()).isEqualTo(userId);
+                assertThat(patientProfileCaptor.getValue().getUser()).isEqualTo(savedUser);
+        }
 
-        assertThatThrownBy(() -> userManagementService.registerPatient(patientRegistrationRequest))
-                .isInstanceOf(UserDomainException.class)
-                .hasMessageContaining("already exists")
-                .extracting(ex -> ((UserDomainException) ex).getErrorCode())
-                .isEqualTo(UserErrorCode.EMAIL_ALREADY_USED);
-    }
+        @Test
+        void registerPatient_shouldRejectDuplicateEmail() {
+                when(appUserRepository.existsByEmailIgnoreCase(patientRegistrationRequest.email())).thenReturn(true);
 
-    @Test
-    void registerDoctor_shouldValidateAdminTokenAndPersistUser() {
-        DoctorRegistrationRequest request = new DoctorRegistrationRequest("doc@example.com", "Password9", "Doc", "Tor");
-        when(appUserRepository.existsByEmailIgnoreCase(request.email())).thenReturn(false);
-        when(passwordEncoder.encode(request.password())).thenReturn("encoded-pass");
+                assertThatThrownBy(() -> userManagementService.registerPatient(patientRegistrationRequest))
+                                .isInstanceOf(UserDomainException.class)
+                                .hasMessageContaining("already exists")
+                                .extracting(ex -> ((UserDomainException) ex).getErrorCode())
+                                .isEqualTo(UserErrorCode.EMAIL_ALREADY_USED);
+        }
 
-        AppUser savedUser = AppUser.builder()
-                .id(UUID.randomUUID())
-                .email(request.email().toLowerCase())
-                .passwordHash("encoded-pass")
-                .firstName(request.firstName())
-                .lastName(request.lastName())
-                .role(UserRole.DOCTOR)
-                .build();
-        when(appUserRepository.save(any(AppUser.class))).thenReturn(savedUser);
+        @Test
+        void registerDoctor_shouldValidateAdminTokenAndPersistUser() {
+                DoctorRegistrationRequest request = new DoctorRegistrationRequest(
+                                "doc@example.com", "Password9", "Doc", "Tor",
+                                "MED-12345", 1, "123 Medical Center");
+                when(appUserRepository.existsByEmailIgnoreCase(request.email())).thenReturn(false);
+                when(passwordEncoder.encode(request.password())).thenReturn("encoded-pass");
 
-        UserDetailsResponse response = userManagementService.registerDoctor("admin-token", request);
+                AppUser savedUser = AppUser.builder()
+                                .id(UUID.randomUUID())
+                                .email(request.email().toLowerCase())
+                                .passwordHash("encoded-pass")
+                                .firstName(request.firstName())
+                                .lastName(request.lastName())
+                                .role(UserRole.DOCTOR)
+                                .build();
+                when(appUserRepository.save(any(AppUser.class))).thenReturn(savedUser);
 
-        verify(adminTokenValidator, times(1)).validate(eq("admin-token"));
-        verify(appUserRepository).save(any(AppUser.class));
-        assertThat(response.role()).isEqualTo(UserRole.DOCTOR);
-        assertThat(response.patientProfile()).isNull();
-    }
+                UserDetailsResponse response = userManagementService.registerDoctor("admin-token", request);
 
-    @Test
-    void getUserDetails_shouldReturnDetails() {
-        UUID userId = UUID.randomUUID();
-        AppUser user = AppUser.builder()
-                .id(userId)
-                .email("patient@example.com")
-                .passwordHash("hash")
-                .firstName("Pat")
-                .lastName("Ient")
-                .role(UserRole.PATIENT)
-                .build();
-        PatientProfile profile = PatientProfile.builder()
-                .id(userId)
-                .user(user)
-                .phoneNumber("5551234567")
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .build();
-        user.attachPatientProfile(profile);
+                verify(adminTokenValidator, times(1)).validate(eq("admin-token"));
+                verify(appUserRepository).save(any(AppUser.class));
+                assertThat(response.role()).isEqualTo(UserRole.DOCTOR);
+                assertThat(response.patientProfile()).isNull();
+        }
 
-        when(appUserRepository.findWithPatientProfileById(userId)).thenReturn(Optional.of(user));
+        @Test
+        void getUserDetails_shouldReturnDetails() {
+                UUID userId = UUID.randomUUID();
+                AppUser user = AppUser.builder()
+                                .id(userId)
+                                .email("patient@example.com")
+                                .passwordHash("hash")
+                                .firstName("Pat")
+                                .lastName("Ient")
+                                .role(UserRole.PATIENT)
+                                .build();
+                PatientProfile profile = PatientProfile.builder()
+                                .id(userId)
+                                .user(user)
+                                .phoneNumber("5551234567")
+                                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                                .build();
+                user.attachPatientProfile(profile);
 
-        UserDetailsResponse response = userManagementService.getUserDetails(userId);
+                when(appUserRepository.findWithPatientProfileById(userId)).thenReturn(Optional.of(user));
 
-        assertThat(response.userId()).isEqualTo(userId);
-        assertThat(response.patientProfile()).isNotNull();
-        assertThat(response.patientProfile().phoneNumber()).isEqualTo("5551234567");
-    }
+                UserDetailsResponse response = userManagementService.getUserDetails(userId);
 
-    @Test
-    void getUserDetails_shouldThrowWhenMissing() {
-        UUID userId = UUID.randomUUID();
-        when(appUserRepository.findWithPatientProfileById(userId)).thenReturn(Optional.empty());
+                assertThat(response.userId()).isEqualTo(userId);
+                assertThat(response.patientProfile()).isNotNull();
+                assertThat(response.patientProfile().phoneNumber()).isEqualTo("5551234567");
+        }
 
-        assertThatThrownBy(() -> userManagementService.getUserDetails(userId))
-                .isInstanceOf(UserDomainException.class)
-                .extracting(ex -> ((UserDomainException) ex).getErrorCode())
-                .isEqualTo(UserErrorCode.USER_NOT_FOUND);
-    }
+        @Test
+        void getUserDetails_shouldThrowWhenMissing() {
+                UUID userId = UUID.randomUUID();
+                when(appUserRepository.findWithPatientProfileById(userId)).thenReturn(Optional.empty());
 
-    @Test
-    void listPatients_shouldMapPage() {
-        UUID userId = UUID.randomUUID();
-        AppUser user = AppUser.builder()
-                .id(userId)
-                .email("patient@example.com")
-                .passwordHash("hash")
-                .firstName("Pat")
-                .lastName("Ient")
-                .role(UserRole.PATIENT)
-                .build();
-        PatientProfile profile = PatientProfile.builder()
-                .id(userId)
-                .user(user)
-                .phoneNumber("5551234567")
-                .dateOfBirth(LocalDate.of(1990, 1, 1))
-                .build();
-        user.attachPatientProfile(profile);
+                assertThatThrownBy(() -> userManagementService.getUserDetails(userId))
+                                .isInstanceOf(UserDomainException.class)
+                                .extracting(ex -> ((UserDomainException) ex).getErrorCode())
+                                .isEqualTo(UserErrorCode.USER_NOT_FOUND);
+        }
 
-        Page<PatientProfile> page = new PageImpl<>(List.of(profile), PageRequest.of(0, 20), 1);
-        when(patientProfileRepository.findAllBy(any(Pageable.class))).thenReturn(page);
+        @Test
+        void listPatients_shouldMapPage() {
+                UUID userId = UUID.randomUUID();
+                AppUser user = AppUser.builder()
+                                .id(userId)
+                                .email("patient@example.com")
+                                .passwordHash("hash")
+                                .firstName("Pat")
+                                .lastName("Ient")
+                                .role(UserRole.PATIENT)
+                                .build();
+                PatientProfile profile = PatientProfile.builder()
+                                .id(userId)
+                                .user(user)
+                                .phoneNumber("5551234567")
+                                .dateOfBirth(LocalDate.of(1990, 1, 1))
+                                .build();
+                user.attachPatientProfile(profile);
 
-        PageResponse<PatientSummaryDto> response = userManagementService.listPatients(PageRequest.of(0, 20));
+                Page<PatientProfile> page = new PageImpl<>(List.of(profile), PageRequest.of(0, 20), 1);
+                when(patientProfileRepository.findAllBy(any(Pageable.class))).thenReturn(page);
 
-        assertThat(response.getContent()).hasSize(1);
-        assertThat(response.getContent().get(0).email()).isEqualTo("patient@example.com");
-        assertThat(response.getPage().getTotalElements()).isEqualTo(1);
-    }
+                PageResponse<PatientSummaryDto> response = userManagementService.listPatients(PageRequest.of(0, 20));
+
+                assertThat(response.getContent()).hasSize(1);
+                assertThat(response.getContent().get(0).email()).isEqualTo("patient@example.com");
+                assertThat(response.getPage().getTotalElements()).isEqualTo(1);
+        }
 }

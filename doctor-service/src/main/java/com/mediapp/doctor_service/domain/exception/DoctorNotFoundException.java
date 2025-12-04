@@ -1,7 +1,5 @@
 package com.mediapp.doctor_service.domain.exception;
 
-import java.util.UUID;
-
 import com.mediapp.common.error.DomainException;
 
 /**
@@ -9,7 +7,7 @@ import com.mediapp.common.error.DomainException;
  */
 public class DoctorNotFoundException extends DomainException {
 
-    public DoctorNotFoundException(UUID doctorId) {
+    public DoctorNotFoundException(String doctorId) {
         super(DoctorErrorCode.DOCTOR_NOT_FOUND, "Doctor profile %s not found".formatted(doctorId));
     }
 }

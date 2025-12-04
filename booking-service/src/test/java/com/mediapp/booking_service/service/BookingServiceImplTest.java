@@ -98,7 +98,7 @@ class BookingServiceImplTest {
             when(appointmentRepository.existsBySlotIdAndStatusNotCancelled(slotId)).thenReturn(false);
             when(doctorServiceClient.reserveSlot(slotId)).thenReturn(
                     SlotReservationResponse.builder()
-                            .slotId(slotId)
+                            .slotId(slotId.toString())
                             .reserved(true)
                             .build());
             when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
