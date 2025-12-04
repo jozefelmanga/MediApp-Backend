@@ -4,10 +4,10 @@ spring:
   profiles:
     default: local
   datasource:
-    url: jdbc:h2:mem:securitydb;MODE=PostgreSQL;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://${SECURITY_DB_HOST:localhost}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:security_db}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${SECURITY_DB_USERNAME:root}
+    password: ${SECURITY_DB_PASSWORD:}
   jpa:
     open-in-view: false
     hibernate:
@@ -15,11 +15,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          time_zone: UTC
     defer-datasource-initialization: true
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   jackson:
 #    serialization:
 #      WRITE_DATES_AS_TIMESTAMPS: false
@@ -74,16 +73,18 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:postgresql://${SECURITY_DB_HOST:security-db}:${SECURITY_DB_PORT:5432}/${SECURITY_DB_NAME:security_db}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://${SECURITY_DB_HOST:security-db}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:security_db}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${SECURITY_DB_USERNAME:security_user}
     password: ${SECURITY_DB_PASSWORD:security_pass}
   jpa:
     hibernate:
       ddl-auto: update
-  h2:
-    console:
-      enabled: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          time_zone: UTC
 
 eureka:
   client:
@@ -100,8 +101,8 @@ spring:
     activate:
       on-profile: prod
   datasource:
-    url: jdbc:postgresql://${SECURITY_DB_HOST}/${SECURITY_DB_NAME}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://${SECURITY_DB_HOST}/${SECURITY_DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${SECURITY_DB_USERNAME}
     password: ${SECURITY_DB_PASSWORD}
   jpa:
@@ -109,11 +110,10 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         jdbc:
           log.warnings: true
-  h2:
-    console:
-      enabled: false
+          time_zone: UTC
 
 management:
   endpoints:
