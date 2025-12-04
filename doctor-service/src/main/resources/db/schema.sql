@@ -30,15 +30,20 @@ CREATE TABLE
         CONSTRAINT availability_slot_doctor_fk FOREIGN KEY (doctor_id) REFERENCES doctor_profile (doctor_id) ON DELETE CASCADE
     );
 
-CREATE INDEX availability_slot_doctor_time_idx ON availability_slot (doctor_id, start_time, end_time);
+CREATE INDEX IF NOT EXISTS availability_slot_doctor_time_idx ON availability_slot (doctor_id, start_time, end_time);
 
-INSERT INTO
-    specialty (specialty_id, name)
+INSERT IGNORE INTO specialty (specialty_id, name)
 VALUES
-    (1, 'Cardiology'),
-    (2, 'Dermatology'),
-    (3, 'Neurology'),
-    (4, 'Pediatrics') ON DUPLICATE KEY
-UPDATE name =
+    (1, 'Cardiology');
+
+INSERT IGNORE INTO specialty (specialty_id, name)
 VALUES
-    (name);
+    (2, 'Dermatology');
+
+INSERT IGNORE INTO specialty (specialty_id, name)
+VALUES
+    (3, 'Neurology');
+
+INSERT IGNORE INTO specialty (specialty_id, name)
+VALUES
+    (4, 'Pediatrics');

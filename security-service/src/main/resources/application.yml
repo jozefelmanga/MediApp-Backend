@@ -4,7 +4,7 @@ spring:
   profiles:
     default: local
   datasource:
-    url: jdbc:mysql://${SECURITY_DB_HOST:localhost}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:security_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://${SECURITY_DB_HOST:localhost}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:mediapp_security}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${SECURITY_DB_USERNAME:root}
     password: ${SECURITY_DB_PASSWORD:}
@@ -73,7 +73,7 @@ spring:
     activate:
       on-profile: docker
   datasource:
-    url: jdbc:mysql://${SECURITY_DB_HOST:security-db}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:security_db}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://${SECURITY_DB_HOST:security-db}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:mediapp_security}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${SECURITY_DB_USERNAME:security_user}
     password: ${SECURITY_DB_PASSWORD:security_pass}
