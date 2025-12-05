@@ -1,7 +1,5 @@
 package com.mediapp.user_service.api;
 
-import java.util.UUID;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -55,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping(path = "/details/{userId}")
-    public ResponseEntity<ApiResponse<UserDetailsResponse>> getUserDetails(@PathVariable UUID userId) {
+    public ResponseEntity<ApiResponse<UserDetailsResponse>> getUserDetails(@PathVariable Long userId) {
         UserDetailsResponse response = userManagementService.getUserDetails(userId);
         return ResponseEntity.ok(ApiResponse.success(response));
     }

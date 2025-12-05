@@ -2,7 +2,6 @@ package com.mediapp.user_service.service;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +91,7 @@ public class UserManagementService {
         return toUserDetails(user);
     }
 
-    public UserDetailsResponse getUserDetails(UUID userId) {
+    public UserDetailsResponse getUserDetails(Long userId) {
         AppUser user = appUserRepository.findWithPatientProfileById(userId)
                 .orElseThrow(() -> new UserDomainException(UserErrorCode.USER_NOT_FOUND,
                         "User not found: " + userId));

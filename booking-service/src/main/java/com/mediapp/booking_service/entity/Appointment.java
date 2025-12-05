@@ -8,7 +8,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
 
 /**
  * Entity representing an appointment booking.
@@ -29,18 +28,18 @@ import java.util.UUID;
 public class Appointment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appointment_id", updatable = false, nullable = false)
-    private UUID appointmentId;
+    private Long appointmentId;
 
     @Column(name = "patient_id", nullable = false)
-    private UUID patientId;
+    private Long patientId;
 
     @Column(name = "doctor_id", nullable = false)
-    private UUID doctorId;
+    private Long doctorId;
 
     @Column(name = "slot_id", nullable = false, unique = true)
-    private String slotId;
+    private Long slotId;
 
     @Column(name = "appointment_date", nullable = false)
     private LocalDate appointmentDate;

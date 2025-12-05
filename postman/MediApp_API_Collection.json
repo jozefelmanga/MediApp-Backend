@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "mediapp-api-collection",
     "name": "MediApp API Collection",
-    "description": "Complete API collection for MediApp - Medical Appointment Booking System\n\nThis collection includes all endpoints for:\n- Security Service (Authentication)\n- User Service (User Management)\n- Doctor Service (Doctor Profiles & Availability)\n- Booking Service (Appointments)",
+    "description": "Complete API collection for MediApp - Medical Appointment Booking System\n\nThis collection includes all endpoints for:\n- Security Service (Authentication)\n- User Service (User Management)\n- Doctor Service (Doctor Profiles & Availability)\n- Booking Service (Appointments)\n\nNote: IDs are auto-increment integers (Long type).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -58,12 +58,12 @@
     },
     {
       "key": "patient_id",
-      "value": "",
+      "value": "1",
       "type": "string"
     },
     {
       "key": "doctor_id",
-      "value": "",
+      "value": "1",
       "type": "string"
     },
     {
@@ -73,7 +73,7 @@
     },
     {
       "key": "appointment_id",
-      "value": "",
+      "value": "1",
       "type": "string"
     }
   ],
@@ -360,7 +360,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"doctorId\": \"{{doctor_id}}\",\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 1,\n    \"officeAddress\": \"123 Medical Center, Suite 100\"\n}"
+              "raw": "{\n    \"userId\": {{doctor_id}},\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 1,\n    \"officeAddress\": \"123 Medical Center, Suite 100\"\n}"
             },
             "url": {
               "raw": "{{doctor_service_url}}/api/v1/doctors/profiles",
@@ -568,7 +568,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"patientId\": \"{{patient_id}}\",\n    \"doctorId\": \"{{doctor_id}}\",\n    \"slotId\": \"{{slot_id}}\",\n    \"appointmentDate\": \"2025-01-06\",\n    \"startTime\": \"09:00:00\"\n}"
+              "raw": "{\n    \"patientId\": {{patient_id}},\n    \"doctorId\": {{doctor_id}},\n    \"slotId\": {{slot_id}},\n    \"appointmentDate\": \"2025-01-06\",\n    \"startTime\": \"09:00:00\"\n}"
             },
             "url": {
               "raw": "{{booking_service_url}}/api/v1/appointments/book",
@@ -885,7 +885,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"patientId\": \"{{patient_id}}\",\n    \"doctorId\": \"{{doctor_id}}\",\n    \"slotId\": \"{{slot_id}}\",\n    \"appointmentDate\": \"2025-01-06\",\n    \"startTime\": \"09:00:00\"\n}"
+              "raw": "{\n    \"patientId\": {{patient_id}},\n    \"doctorId\": {{doctor_id}},\n    \"slotId\": {{slot_id}},\n    \"appointmentDate\": \"2025-01-06\",\n    \"startTime\": \"09:00:00\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/booking-service/api/v1/appointments/book",

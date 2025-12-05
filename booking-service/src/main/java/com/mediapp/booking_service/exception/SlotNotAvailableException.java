@@ -9,7 +9,7 @@ public class SlotNotAvailableException extends RuntimeException {
         super(message);
     }
 
-    public static SlotNotAvailableException forSlot(String slotId) {
+    public static SlotNotAvailableException forSlot(Long slotId) {
         return new SlotNotAvailableException("Slot is not available or already booked: " + slotId);
     }
 }

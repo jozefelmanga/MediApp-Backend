@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,7 +29,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void handleAppointmentCreated(AppointmentCreatedEvent event) {
-        UUID eventId = event.getEventId();
+        Long eventId = event.getEventId();
         if (eventId == null) {
             log.warn("Received AppointmentCreatedEvent without eventId, generating one");
         }
@@ -77,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     @Transactional
     public void handleAppointmentCancelled(AppointmentCancelledEvent event) {
-        UUID eventId = event.getEventId();
+        Long eventId = event.getEventId();
         if (repository.existsByEventId(eventId)) {
             log.info("Duplicate AppointmentCancelledEvent received, eventId={}, skipping", eventId);
             return;

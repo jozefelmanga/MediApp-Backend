@@ -1,7 +1,5 @@
 package com.mediapp.user_service.client;
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,18 +29,17 @@ public class DoctorServiceClient {
         /**
          * Creates a doctor profile in the doctor-service.
          *
-         * @param doctorId             the UUID of the doctor (same as user ID)
+         * @param doctorId             the ID of the doctor (same as user ID)
          * @param medicalLicenseNumber the doctor's medical license number
          * @param specialtyId          the specialty ID
          * @param officeAddress        the doctor's office address
          * @return Mono<Void> that completes when the profile is created
          */
-        public Mono<Void> createDoctorProfile(UUID doctorId, String medicalLicenseNumber,
+        public Mono<Void> createDoctorProfile(Long doctorId, String medicalLicenseNumber,
                         Integer specialtyId, String officeAddress) {
 
-                // Convert UUID to String for the request since doctor-service uses String IDs
                 CreateDoctorProfileRequest request = new CreateDoctorProfileRequest(
-                                doctorId.toString(), medicalLicenseNumber, specialtyId, officeAddress);
+                                doctorId, medicalLicenseNumber, specialtyId, officeAddress);
 
                 log.info("Creating doctor profile in doctor-service for doctorId: {}", doctorId);
 
@@ -64,7 +61,7 @@ public class DoctorServiceClient {
          * Creates a doctor profile asynchronously (fire-and-forget with retry).
          * This is useful when you want to continue without waiting for the response.
          */
-        public void createDoctorProfileAsync(UUID doctorId, String medicalLicenseNumber,
+        public void createDoctorProfileAsync(Long doctorId, String medicalLicenseNumber,
                         Integer specialtyId, String officeAddress) {
 
                 createDoctorProfile(doctorId, medicalLicenseNumber, specialtyId, officeAddress)

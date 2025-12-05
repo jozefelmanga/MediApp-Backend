@@ -4,7 +4,6 @@ import com.mediapp.booking_service.dto.*;
 import com.mediapp.booking_service.entity.AppointmentStatus;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 /**
  * Service interface for booking operations.
@@ -26,7 +25,7 @@ public interface BookingService {
      * @param reason        optional cancellation reason
      * @return the cancellation confirmation
      */
-    CancellationConfirmation cancelAppointment(UUID appointmentId, String reason);
+    CancellationConfirmation cancelAppointment(Long appointmentId, String reason);
 
     /**
      * Get all appointments for a patient.
@@ -36,7 +35,7 @@ public interface BookingService {
      * @param size      page size
      * @return paginated list of appointments
      */
-    PagedResponse<AppointmentDetail> getPatientAppointments(UUID patientId, int page, int size);
+    PagedResponse<AppointmentDetail> getPatientAppointments(Long patientId, int page, int size);
 
     /**
      * Get appointments for a patient filtered by status.
@@ -48,7 +47,7 @@ public interface BookingService {
      * @return paginated list of appointments
      */
     PagedResponse<AppointmentDetail> getPatientAppointmentsByStatus(
-            UUID patientId, AppointmentStatus status, int page, int size);
+            Long patientId, AppointmentStatus status, int page, int size);
 
     /**
      * Get today's appointments for a doctor.
@@ -56,7 +55,7 @@ public interface BookingService {
      * @param doctorId the doctor ID
      * @return list of appointments for today
      */
-    java.util.List<AppointmentDetail> getDoctorTodayAppointments(UUID doctorId);
+    java.util.List<AppointmentDetail> getDoctorTodayAppointments(Long doctorId);
 
     /**
      * Get appointments for a doctor on a specific date.
@@ -65,7 +64,7 @@ public interface BookingService {
      * @param date     the date to query
      * @return list of appointments for the date
      */
-    java.util.List<AppointmentDetail> getDoctorAppointmentsByDate(UUID doctorId, LocalDate date);
+    java.util.List<AppointmentDetail> getDoctorAppointmentsByDate(Long doctorId, LocalDate date);
 
     /**
      * Get a specific appointment by ID.
@@ -73,5 +72,5 @@ public interface BookingService {
      * @param appointmentId the appointment ID
      * @return the appointment details
      */
-    AppointmentDetail getAppointment(UUID appointmentId);
+    AppointmentDetail getAppointment(Long appointmentId);
 }

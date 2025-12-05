@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
 
 /**
  * Response DTO containing appointment details.
@@ -20,10 +19,10 @@ import java.util.UUID;
 @Builder
 public class AppointmentDetail {
 
-    private UUID appointmentId;
-    private UUID patientId;
-    private UUID doctorId;
-    private String slotId;
+    private Long appointmentId;
+    private Long patientId;
+    private Long doctorId;
+    private Long slotId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
     private AppointmentStatus status;

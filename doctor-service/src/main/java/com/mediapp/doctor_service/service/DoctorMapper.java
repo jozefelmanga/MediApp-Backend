@@ -18,6 +18,7 @@ public class DoctorMapper {
     public DoctorProfileResponse toDoctorProfileResponse(DoctorProfileEntity doctor, SpecialtyEntity specialty) {
         return DoctorProfileResponse.builder()
                 .doctorId(doctor.getId())
+                .userId(doctor.getUserId())
                 .medicalLicenseNumber(doctor.getMedicalLicenseNumber())
                 .specialtyId(doctor.getSpecialtyId())
                 .specialtyName(specialty != null ? specialty.getName() : null)

@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -42,10 +41,10 @@ class AppointmentControllerTest {
         private AppointmentController appointmentController;
 
         private ObjectMapper objectMapper;
-        private UUID patientId;
-        private UUID doctorId;
-        private String slotId;
-        private UUID appointmentId;
+        private Long patientId;
+        private Long doctorId;
+        private Long slotId;
+        private Long appointmentId;
 
         @BeforeEach
         void setUp() {
@@ -56,10 +55,10 @@ class AppointmentControllerTest {
                 objectMapper = new ObjectMapper();
                 objectMapper.registerModule(new JavaTimeModule());
 
-                patientId = UUID.randomUUID();
-                doctorId = UUID.randomUUID();
-                slotId = UUID.randomUUID().toString();
-                appointmentId = UUID.randomUUID();
+                patientId = 1L;
+                doctorId = 2L;
+                slotId = 123L;
+                appointmentId = 100L;
         }
 
         @Test

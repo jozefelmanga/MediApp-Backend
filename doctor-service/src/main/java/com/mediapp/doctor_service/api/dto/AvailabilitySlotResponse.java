@@ -9,9 +9,9 @@ import lombok.Builder;
  */
 @Builder
 public record AvailabilitySlotResponse(
-                String slotId,
-                String doctorId,
-                Instant startTime,
-                Instant endTime,
-                boolean reserved) {
+        Long slotId,
+        Long doctorId,
+        Instant startTime,
+        Instant endTime,
+        boolean reserved) {
 }

@@ -7,7 +7,7 @@ import com.mediapp.doctor_service.common.error.DomainException;
  */
 public class DoctorNotFoundException extends DomainException {
 
-    public DoctorNotFoundException(String doctorId) {
-        super(DoctorErrorCode.DOCTOR_NOT_FOUND, "Doctor profile %s not found".formatted(doctorId));
+    public DoctorNotFoundException(Long doctorId) {
+        super(DoctorErrorCode.DOCTOR_NOT_FOUND, "Doctor profile %d not found".formatted(doctorId));
     }
 }

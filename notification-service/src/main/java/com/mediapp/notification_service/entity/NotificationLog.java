@@ -5,7 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Persisted notification log to support idempotency and audit.
@@ -23,15 +22,15 @@ import java.util.UUID;
 public class NotificationLog {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "log_id", updatable = false, nullable = false)
-    private UUID logId;
+    private Long logId;
 
     @Column(name = "event_id", nullable = false, unique = true)
-    private UUID eventId;
+    private Long eventId;
 
     @Column(name = "recipient_user_id")
-    private UUID recipientUserId;
+    private Long recipientUserId;
 
     @Column(name = "message_type")
     private String messageType;

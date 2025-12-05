@@ -1,7 +1,5 @@
 package com.mediapp.user_service.api.dto;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mediapp.user_service.common.dto.BaseDto;
 import com.mediapp.user_service.domain.UserRole;
@@ -11,10 +9,10 @@ import com.mediapp.user_service.domain.UserRole;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record UserDetailsResponse(
-                UUID userId,
-                String email,
-                String firstName,
-                String lastName,
-                UserRole role,
-                PatientProfileDto patientProfile) implements BaseDto {
+        Long userId,
+        String email,
+        String firstName,
+        String lastName,
+        UserRole role,
+        PatientProfileDto patientProfile) implements BaseDto {
 }

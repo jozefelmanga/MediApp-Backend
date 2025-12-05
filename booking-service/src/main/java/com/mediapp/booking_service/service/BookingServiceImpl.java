@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
@@ -39,6 +39,9 @@ public class BookingServiceImpl implements BookingService {
     private final DoctorServiceClient doctorServiceClient;
     private final AppointmentEventPublisher eventPublisher;
     private final AppointmentMapper appointmentMapper;
+
+    // Counter for generating unique event IDs
+    private final AtomicLong eventIdCounter = new AtomicLong(System.currentTimeMillis());
 
     @Override
     @Transactional
@@ -94,7 +97,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public CancellationConfirmation cancelAppointment(UUID appointmentId, String reason) {
+    public CancellationConfirmation cancelAppointment(Long appointmentId, String reason) {
         log.info("Cancelling appointment: {}", appointmentId);
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -129,7 +132,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagedResponse<AppointmentDetail> getPatientAppointments(UUID patientId, int page, int size) {
+    public PagedResponse<AppointmentDetail> getPatientAppointments(Long patientId, int page, int size) {
         log.debug("Fetching appointments for patient: {}, page: {}, size: {}", patientId, page, size);
 
         Pageable pageable = PageRequest.of(page, size);
@@ -142,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public PagedResponse<AppointmentDetail> getPatientAppointmentsByStatus(
-            UUID patientId, AppointmentStatus status, int page, int size) {
+            Long patientId, AppointmentStatus status, int page, int size) {
         log.debug("Fetching appointments for patient: {} with status: {}", patientId, status);
 
         Pageable pageable = PageRequest.of(page, size);
@@ -154,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentDetail> getDoctorTodayAppointments(UUID doctorId) {
+    public List<AppointmentDetail> getDoctorTodayAppointments(Long doctorId) {
         log.debug("Fetching today's appointments for doctor: {}", doctorId);
 
         LocalDate today = LocalDate.now();
@@ -169,7 +172,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AppointmentDetail> getDoctorAppointmentsByDate(UUID doctorId, LocalDate date) {
+    public List<AppointmentDetail> getDoctorAppointmentsByDate(Long doctorId, LocalDate date) {
         log.debug("Fetching appointments for doctor: {} on date: {}", doctorId, date);
 
         List<Appointment> appointments = appointmentRepository
@@ -182,7 +185,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional(readOnly = true)
-    public AppointmentDetail getAppointment(UUID appointmentId) {
+    public AppointmentDetail getAppointment(Long appointmentId) {
         log.debug("Fetching appointment: {}", appointmentId);
 
         Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -193,7 +196,7 @@ public class BookingServiceImpl implements BookingService {
 
     private void publishAppointmentCreatedEvent(Appointment appointment) {
         AppointmentCreatedEvent event = AppointmentCreatedEvent.builder()
-                .eventId(UUID.randomUUID())
+                .eventId(eventIdCounter.incrementAndGet())
                 .appointmentId(appointment.getAppointmentId())
                 .patientId(appointment.getPatientId())
                 .doctorId(appointment.getDoctorId())
@@ -215,7 +218,7 @@ public class BookingServiceImpl implements BookingService {
 
     private void publishAppointmentCancelledEvent(Appointment appointment, String reason) {
         AppointmentCancelledEvent event = AppointmentCancelledEvent.builder()
-                .eventId(UUID.randomUUID())
+                .eventId(eventIdCounter.incrementAndGet())
                 .appointmentId(appointment.getAppointmentId())
                 .patientId(appointment.getPatientId())
                 .doctorId(appointment.getDoctorId())

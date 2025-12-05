@@ -9,8 +9,8 @@ import com.mediapp.doctor_service.common.error.DomainException;
  */
 public class AvailabilityOverlapException extends DomainException {
 
-    public AvailabilityOverlapException(String doctorId, Instant startTime, Instant endTime) {
+    public AvailabilityOverlapException(Long doctorId, Instant startTime, Instant endTime) {
         super(DoctorErrorCode.AVAILABILITY_OVERLAP,
-                "Doctor %s already has availability overlapping %s - %s".formatted(doctorId, startTime, endTime));
+                "Doctor %d already has availability overlapping %s - %s".formatted(doctorId, startTime, endTime));
     }
 }

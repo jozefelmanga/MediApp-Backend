@@ -29,7 +29,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,19 +52,19 @@ class BookingServiceImplTest {
     @InjectMocks
     private BookingServiceImpl bookingService;
 
-    private UUID patientId;
-    private UUID doctorId;
-    private String slotId;
-    private UUID appointmentId;
+    private Long patientId;
+    private Long doctorId;
+    private Long slotId;
+    private Long appointmentId;
     private BookingRequest bookingRequest;
     private Appointment appointment;
 
     @BeforeEach
     void setUp() {
-        patientId = UUID.randomUUID();
-        doctorId = UUID.randomUUID();
-        slotId = UUID.randomUUID().toString();
-        appointmentId = UUID.randomUUID();
+        patientId = 1L;
+        doctorId = 2L;
+        slotId = 123L;
+        appointmentId = 100L;
 
         bookingRequest = BookingRequest.builder()
                 .patientId(patientId)

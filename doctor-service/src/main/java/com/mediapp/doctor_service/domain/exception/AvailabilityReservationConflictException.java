@@ -7,8 +7,8 @@ import com.mediapp.doctor_service.common.error.DomainException;
  */
 public class AvailabilityReservationConflictException extends DomainException {
 
-    public AvailabilityReservationConflictException(String slotId) {
+    public AvailabilityReservationConflictException(Long slotId) {
         super(DoctorErrorCode.AVAILABILITY_CONFLICT,
-                "Availability slot %s is already reserved".formatted(slotId));
+                "Availability slot %d is already reserved".formatted(slotId));
     }
 }

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.UUID;
 
 /**
  * Event published when an appointment is cancelled.
@@ -23,11 +22,11 @@ public class AppointmentCancelledEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private UUID eventId;
-    private UUID appointmentId;
-    private UUID patientId;
-    private UUID doctorId;
-    private String slotId;
+    private Long eventId;
+    private Long appointmentId;
+    private Long patientId;
+    private Long doctorId;
+    private Long slotId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
     private LocalDateTime cancelledAt;

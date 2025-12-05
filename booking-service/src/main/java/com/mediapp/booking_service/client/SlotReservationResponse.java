@@ -9,7 +9,6 @@ import java.time.Instant;
 
 /**
  * DTO representing a slot reservation response from doctor-service.
- * Uses String for IDs since doctor-service returns String IDs.
  */
 @Data
 @NoArgsConstructor
@@ -17,8 +16,8 @@ import java.time.Instant;
 @Builder
 public class SlotReservationResponse {
 
-    private String slotId;
-    private String doctorId;
+    private Long slotId;
+    private Long doctorId;
     private Instant startTime;
     private Instant endTime;
     private Instant reservedAt;

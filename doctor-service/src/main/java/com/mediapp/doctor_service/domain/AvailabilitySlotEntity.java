@@ -4,6 +4,8 @@ import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
@@ -27,11 +29,12 @@ import lombok.Setter;
 public class AvailabilitySlotEntity {
 
     @Id
-    @Column(name = "slot_id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "slot_id", updatable = false, nullable = false)
+    private Long id;
 
-    @Column(name = "doctor_id")
-    private String doctorId;
+    @Column(name = "doctor_id", nullable = false)
+    private Long doctorId;
 
     @Column(name = "start_time")
     private Instant startTime;

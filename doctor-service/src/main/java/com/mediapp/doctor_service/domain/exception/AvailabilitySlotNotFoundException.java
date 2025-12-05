@@ -7,8 +7,8 @@ import com.mediapp.doctor_service.common.error.DomainException;
  */
 public class AvailabilitySlotNotFoundException extends DomainException {
 
-    public AvailabilitySlotNotFoundException(String slotId) {
+    public AvailabilitySlotNotFoundException(Long slotId) {
         super(DoctorErrorCode.AVAILABILITY_NOT_FOUND,
-                "Availability slot %s not found".formatted(slotId));
+                "Availability slot %d not found".formatted(slotId));
     }
 }

@@ -10,7 +10,6 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +26,7 @@ class AvailabilitySlotGeneratorTest {
 
     @Test
     void generate_shouldCreateSlotsForRequestedDays() {
-        String doctorId = UUID.randomUUID().toString();
+        Long doctorId = 1L;
         CreateAvailabilityRequest request = CreateAvailabilityRequest.builder()
                 .startDate(LocalDate.of(2025, 1, 6))
                 .endDate(LocalDate.of(2025, 1, 13))

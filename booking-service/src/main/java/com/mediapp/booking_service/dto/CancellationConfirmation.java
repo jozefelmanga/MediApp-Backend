@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 /**
  * Response DTO for a successful cancellation.
@@ -17,7 +16,7 @@ import java.util.UUID;
 @Builder
 public class CancellationConfirmation {
 
-    private UUID appointmentId;
+    private Long appointmentId;
     private String status;
     private LocalDateTime cancelledAt;
     private String message;

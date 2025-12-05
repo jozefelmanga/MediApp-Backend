@@ -11,7 +11,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,7 @@ public class AvailabilitySlotGenerator {
         this.clock = clock;
     }
 
-    public List<AvailabilitySlotEntity> generate(String doctorId, CreateAvailabilityRequest request) {
+    public List<AvailabilitySlotEntity> generate(Long doctorId, CreateAvailabilityRequest request) {
         ZoneId zoneId = resolveZoneId(request.timeZone());
         LocalDate currentDate = request.startDate();
         LocalDate endDate = request.endDate();
@@ -54,7 +53,6 @@ public class AvailabilitySlotGenerator {
                     ZonedDateTime endDateTime = ZonedDateTime.of(currentDate, slotEnd, zoneId);
 
                     slots.add(AvailabilitySlotEntity.builder()
-                            .id(UUID.randomUUID().toString())
                             .doctorId(doctorId)
                             .startTime(startDateTime.toInstant())
                             .endTime(endDateTime.toInstant())

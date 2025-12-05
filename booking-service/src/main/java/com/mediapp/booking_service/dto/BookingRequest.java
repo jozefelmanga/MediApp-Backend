@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
 /**
  * Request DTO for booking an appointment.
@@ -20,13 +19,13 @@ import java.util.UUID;
 public class BookingRequest {
 
     @NotNull(message = "Patient ID is required")
-    private UUID patientId;
+    private Long patientId;
 
     @NotNull(message = "Doctor ID is required")
-    private UUID doctorId;
+    private Long doctorId;
 
     @NotNull(message = "Slot ID is required")
-    private String slotId;
+    private Long slotId;
 
     @NotNull(message = "Appointment date is required")
     private LocalDate appointmentDate;

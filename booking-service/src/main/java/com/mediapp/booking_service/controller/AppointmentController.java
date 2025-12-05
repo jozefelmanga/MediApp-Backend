@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * REST controller for appointment booking operations.
@@ -55,7 +54,7 @@ public class AppointmentController {
      */
     @PutMapping("/cancel/{appointmentId}")
     public ResponseEntity<CancellationConfirmation> cancelAppointment(
-            @PathVariable UUID appointmentId,
+            @PathVariable Long appointmentId,
             @RequestParam(required = false) String reason) {
         log.info("Received cancellation request for appointment: {}", appointmentId);
 
@@ -68,7 +67,7 @@ public class AppointmentController {
      */
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<PagedResponse<AppointmentDetail>> getPatientAppointments(
-            @PathVariable UUID patientId,
+            @PathVariable Long patientId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) AppointmentStatus status) {
@@ -91,7 +90,7 @@ public class AppointmentController {
      */
     @GetMapping("/doctor/{doctorId}/today")
     public ResponseEntity<List<AppointmentDetail>> getDoctorTodayAppointments(
-            @PathVariable UUID doctorId) {
+            @PathVariable Long doctorId) {
         log.info("Fetching today's appointments for doctor: {}", doctorId);
 
         List<AppointmentDetail> appointments = bookingService.getDoctorTodayAppointments(doctorId);
@@ -109,7 +108,7 @@ public class AppointmentController {
      */
     @GetMapping("/doctor/{doctorId}/date/{date}")
     public ResponseEntity<List<AppointmentDetail>> getDoctorAppointmentsByDate(
-            @PathVariable UUID doctorId,
+            @PathVariable Long doctorId,
             @PathVariable LocalDate date) {
         log.info("Fetching appointments for doctor: {} on date: {}", doctorId, date);
 
@@ -127,7 +126,7 @@ public class AppointmentController {
      */
     @GetMapping("/{appointmentId}")
     public ResponseEntity<AppointmentDetail> getAppointment(
-            @PathVariable UUID appointmentId) {
+            @PathVariable Long appointmentId) {
         log.info("Fetching appointment: {}", appointmentId);
 
         AppointmentDetail appointment = bookingService.getAppointment(appointmentId);

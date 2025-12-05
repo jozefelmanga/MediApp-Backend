@@ -52,7 +52,7 @@ public class DoctorAvailabilityController {
 
         @GetMapping("/{doctorId}/availability")
         public ResponseEntity<ApiResponse<List<AvailabilitySlotResponse>>> getAvailability(
-                        @PathVariable String doctorId,
+                        @PathVariable Long doctorId,
                         @RequestParam(value = "from", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime from,
                         @RequestParam(value = "to", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime to) {
                 List<AvailabilitySlotResponse> slots = doctorAvailabilityService.getAvailability(
@@ -64,7 +64,7 @@ public class DoctorAvailabilityController {
 
         @PostMapping("/{doctorId}/availability")
         public ResponseEntity<ApiResponse<List<AvailabilitySlotResponse>>> createAvailability(
-                        @PathVariable String doctorId,
+                        @PathVariable Long doctorId,
                         @Valid @RequestBody CreateAvailabilityRequest request) {
                 List<AvailabilitySlotResponse> slots = doctorAvailabilityService.createRecurringSlots(doctorId,
                                 request);
@@ -83,7 +83,7 @@ public class DoctorAvailabilityController {
         public ResponseEntity<ApiResponse<DoctorProfileResponse>> createDoctorProfile(
                         @Valid @RequestBody CreateDoctorProfileRequest request) {
                 DoctorProfileResponse profile = doctorAvailabilityService.createDoctorProfile(
-                                request.doctorId(),
+                                request.userId(),
                                 request.medicalLicenseNumber(),
                                 request.specialtyId(),
                                 request.officeAddress());
@@ -101,7 +101,7 @@ public class DoctorAvailabilityController {
          */
         @PutMapping("/availability/{slotId}/reserve")
         public ResponseEntity<ApiResponse<SlotReservationResponse>> reserveSlot(
-                        @PathVariable String slotId,
+                        @PathVariable Long slotId,
                         @Valid @RequestBody ReserveSlotRequest request) {
                 SlotReservationResponse reservation = doctorAvailabilityService.reserveSlot(slotId,
                                 request.reservationToken());
@@ -118,7 +118,7 @@ public class DoctorAvailabilityController {
          */
         @PutMapping("/availability/{slotId}/release")
         public ResponseEntity<ApiResponse<SlotReservationResponse>> releaseSlot(
-                        @PathVariable String slotId) {
+                        @PathVariable Long slotId) {
                 SlotReservationResponse response = doctorAvailabilityService.releaseSlot(slotId);
                 return ResponseEntity.ok(ApiResponse.success(response));
         }

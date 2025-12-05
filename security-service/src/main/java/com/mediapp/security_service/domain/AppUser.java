@@ -18,7 +18,6 @@ import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
 import java.util.EnumSet;
 import java.util.Set;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,8 +34,8 @@ import lombok.Setter;
 public class AppUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String email;

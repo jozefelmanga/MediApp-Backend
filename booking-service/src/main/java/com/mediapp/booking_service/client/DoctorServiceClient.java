@@ -22,12 +22,10 @@ import java.util.UUID;
 public class DoctorServiceClient {
 
     private final RestClient restClient;
-    private final String doctorServiceUrl;
 
     public DoctorServiceClient(
             RestClient.Builder restClientBuilder,
             @Value("${services.doctor-service.url}") String doctorServiceUrl) {
-        this.doctorServiceUrl = doctorServiceUrl;
         this.restClient = restClientBuilder
                 .baseUrl(doctorServiceUrl)
                 .build();
@@ -39,7 +37,7 @@ public class DoctorServiceClient {
      * @param slotId the slot ID to reserve
      * @return the reservation response
      */
-    public SlotReservationResponse reserveSlot(String slotId) {
+    public SlotReservationResponse reserveSlot(Long slotId) {
         log.info("Attempting to reserve slot: {} in doctor-service", slotId);
 
         // Generate a unique reservation token for this booking
@@ -75,7 +73,7 @@ public class DoctorServiceClient {
      * @param slotId the slot ID to release
      * @return the reservation response
      */
-    public SlotReservationResponse releaseSlot(String slotId) {
+    public SlotReservationResponse releaseSlot(Long slotId) {
         log.info("Attempting to release slot: {} in doctor-service", slotId);
 
         DoctorServiceApiResponse<SlotReservationResponse> apiResponse = restClient.put()

@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,7 +82,7 @@ class UserManagementServiceTest {
 
         @Test
         void registerPatient_shouldPersistUserAndProfile() {
-                UUID userId = UUID.randomUUID();
+                Long userId = 1L;
                 when(appUserRepository.existsByEmailIgnoreCase(patientRegistrationRequest.email())).thenReturn(false);
                 when(passwordEncoder.encode(patientRegistrationRequest.password())).thenReturn("encoded-pass");
 
@@ -139,7 +138,7 @@ class UserManagementServiceTest {
                 when(passwordEncoder.encode(request.password())).thenReturn("encoded-pass");
 
                 AppUser savedUser = AppUser.builder()
-                                .id(UUID.randomUUID())
+                                .id(1L)
                                 .email(request.email().toLowerCase())
                                 .passwordHash("encoded-pass")
                                 .firstName(request.firstName())
@@ -158,7 +157,7 @@ class UserManagementServiceTest {
 
         @Test
         void getUserDetails_shouldReturnDetails() {
-                UUID userId = UUID.randomUUID();
+                Long userId = 1L;
                 AppUser user = AppUser.builder()
                                 .id(userId)
                                 .email("patient@example.com")
@@ -186,7 +185,7 @@ class UserManagementServiceTest {
 
         @Test
         void getUserDetails_shouldThrowWhenMissing() {
-                UUID userId = UUID.randomUUID();
+                Long userId = 999L;
                 when(appUserRepository.findWithPatientProfileById(userId)).thenReturn(Optional.empty());
 
                 assertThatThrownBy(() -> userManagementService.getUserDetails(userId))
@@ -197,7 +196,7 @@ class UserManagementServiceTest {
 
         @Test
         void listPatients_shouldMapPage() {
-                UUID userId = UUID.randomUUID();
+                Long userId = 1L;
                 AppUser user = AppUser.builder()
                                 .id(userId)
                                 .email("patient@example.com")

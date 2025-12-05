@@ -9,10 +9,10 @@ import lombok.Builder;
  */
 @Builder
 public record SlotReservationResponse(
-                String slotId,
-                String doctorId,
-                Instant startTime,
-                Instant endTime,
-                Instant reservedAt,
-                String reservationToken) {
+        Long slotId,
+        Long doctorId,
+        Instant startTime,
+        Instant endTime,
+        Instant reservedAt,
+        String reservationToken) {
 }

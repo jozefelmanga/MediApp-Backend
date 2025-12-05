@@ -63,7 +63,7 @@ public class DoctorAvailabilityService {
                                 .collect(Collectors.toList());
         }
 
-        public List<AvailabilitySlotResponse> getAvailability(String doctorId, Instant from, Instant to) {
+        public List<AvailabilitySlotResponse> getAvailability(Long doctorId, Instant from, Instant to) {
                 ensureDoctorExists(doctorId);
 
                 Instant effectiveFrom = from != null ? from : Instant.now(clock);
@@ -78,7 +78,7 @@ public class DoctorAvailabilityService {
         }
 
         @Transactional
-        public List<AvailabilitySlotResponse> createRecurringSlots(String doctorId, CreateAvailabilityRequest request) {
+        public List<AvailabilitySlotResponse> createRecurringSlots(Long doctorId, CreateAvailabilityRequest request) {
                 ensureDoctorExists(doctorId);
 
                 List<AvailabilitySlotEntity> generated = slotGenerator.generate(doctorId, request);
@@ -99,21 +99,20 @@ public class DoctorAvailabilityService {
         /**
          * Creates a new doctor profile. Called by user-service when a doctor registers.
          *
-         * @param doctorId             the UUID of the doctor (same as user ID from
-         *                             user-service)
+         * @param userId               the ID of the user from user-service
          * @param medicalLicenseNumber the doctor's medical license number
          * @param specialtyId          the specialty ID
          * @param officeAddress        the doctor's office address
          * @return DoctorProfileResponse the created doctor profile
          */
         @Transactional
-        public DoctorProfileResponse createDoctorProfile(String doctorId, String medicalLicenseNumber,
+        public DoctorProfileResponse createDoctorProfile(Long userId, String medicalLicenseNumber,
                         Integer specialtyId, String officeAddress) {
                 SpecialtyEntity specialty = specialtyRepository.findById(specialtyId)
                                 .orElseThrow(() -> new SpecialtyNotFoundException(specialtyId));
 
                 DoctorProfileEntity profile = DoctorProfileEntity.builder()
-                                .id(doctorId)
+                                .userId(userId)
                                 .medicalLicenseNumber(medicalLicenseNumber)
                                 .specialtyId(specialtyId)
                                 .officeAddress(officeAddress)
@@ -126,7 +125,7 @@ public class DoctorAvailabilityService {
         }
 
         @Transactional
-        public SlotReservationResponse reserveSlot(String slotId, String reservationToken) {
+        public SlotReservationResponse reserveSlot(Long slotId, String reservationToken) {
                 // First check if slot exists
                 AvailabilitySlotEntity existing = availabilitySlotRepository.findById(slotId)
                                 .orElseThrow(() -> new AvailabilitySlotNotFoundException(slotId));
@@ -154,7 +153,7 @@ public class DoctorAvailabilityService {
          * @return SlotReservationResponse the slot after release
          */
         @Transactional
-        public SlotReservationResponse releaseSlot(String slotId) {
+        public SlotReservationResponse releaseSlot(Long slotId) {
                 AvailabilitySlotEntity existing = availabilitySlotRepository.findById(slotId)
                                 .orElseThrow(() -> new AvailabilitySlotNotFoundException(slotId));
 
@@ -167,12 +166,12 @@ public class DoctorAvailabilityService {
                 return doctorMapper.toReservationResponse(saved);
         }
 
-        private DoctorProfileEntity ensureDoctorExists(String doctorId) {
+        private DoctorProfileEntity ensureDoctorExists(Long doctorId) {
                 return doctorProfileRepository.findById(doctorId)
                                 .orElseThrow(() -> new DoctorNotFoundException(doctorId));
         }
 
-        private void ensureNoOverlap(String doctorId, AvailabilitySlotEntity slot) {
+        private void ensureNoOverlap(Long doctorId, AvailabilitySlotEntity slot) {
                 boolean overlap = availabilitySlotRepository
                                 .existsOverlappingSlot(doctorId, slot.getStartTime(), slot.getEndTime());
                 if (overlap) {
