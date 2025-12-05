@@ -55,7 +55,7 @@ class BookingServiceImplTest {
 
     private UUID patientId;
     private UUID doctorId;
-    private UUID slotId;
+    private String slotId;
     private UUID appointmentId;
     private BookingRequest bookingRequest;
     private Appointment appointment;
@@ -64,7 +64,7 @@ class BookingServiceImplTest {
     void setUp() {
         patientId = UUID.randomUUID();
         doctorId = UUID.randomUUID();
-        slotId = UUID.randomUUID();
+        slotId = UUID.randomUUID().toString();
         appointmentId = UUID.randomUUID();
 
         bookingRequest = BookingRequest.builder()
@@ -98,7 +98,7 @@ class BookingServiceImplTest {
             when(appointmentRepository.existsBySlotIdAndStatusNotCancelled(slotId)).thenReturn(false);
             when(doctorServiceClient.reserveSlot(slotId)).thenReturn(
                     SlotReservationResponse.builder()
-                            .slotId(slotId.toString())
+                            .slotId(slotId)
                             .build());
             when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
             when(appointmentMapper.toConfirmation(any(), any())).thenReturn(
@@ -141,7 +141,7 @@ class BookingServiceImplTest {
         void shouldThrowExceptionWhenSlotNotAvailableInDoctorService() {
             // Given
             when(appointmentRepository.existsBySlotIdAndStatusNotCancelled(slotId)).thenReturn(false);
-            when(doctorServiceClient.reserveSlot(slotId)).thenThrow(new SlotNotAvailableException(slotId));
+            when(doctorServiceClient.reserveSlot(slotId)).thenThrow(SlotNotAvailableException.forSlot(slotId));
 
             // When/Then
             assertThatThrownBy(() -> bookingService.bookAppointment(bookingRequest))

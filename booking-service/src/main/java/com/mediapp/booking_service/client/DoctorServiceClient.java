@@ -39,7 +39,7 @@ public class DoctorServiceClient {
      * @param slotId the slot ID to reserve
      * @return the reservation response
      */
-    public SlotReservationResponse reserveSlot(UUID slotId) {
+    public SlotReservationResponse reserveSlot(String slotId) {
         log.info("Attempting to reserve slot: {} in doctor-service", slotId);
 
         // Generate a unique reservation token for this booking
@@ -52,7 +52,7 @@ public class DoctorServiceClient {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     if (response.getStatusCode() == HttpStatus.CONFLICT) {
-                        throw new SlotNotAvailableException(slotId);
+                        throw SlotNotAvailableException.forSlot(slotId);
                     } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
                         throw new SlotNotAvailableException("Slot not found: " + slotId);
                     }
@@ -75,7 +75,7 @@ public class DoctorServiceClient {
      * @param slotId the slot ID to release
      * @return the reservation response
      */
-    public SlotReservationResponse releaseSlot(UUID slotId) {
+    public SlotReservationResponse releaseSlot(String slotId) {
         log.info("Attempting to release slot: {} in doctor-service", slotId);
 
         DoctorServiceApiResponse<SlotReservationResponse> apiResponse = restClient.put()

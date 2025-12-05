@@ -26,7 +26,7 @@ public class BookingRequest {
     private UUID doctorId;
 
     @NotNull(message = "Slot ID is required")
-    private UUID slotId;
+    private String slotId;
 
     @NotNull(message = "Appointment date is required")
     private LocalDate appointmentDate;

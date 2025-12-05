@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
         // Check if slot is already booked locally
         if (appointmentRepository.existsBySlotIdAndStatusNotCancelled(request.getSlotId())) {
             log.warn("Slot {} is already booked", request.getSlotId());
-            throw new SlotNotAvailableException(request.getSlotId());
+            throw SlotNotAvailableException.forSlot(request.getSlotId());
         }
 
         // Reserve slot in doctor-service

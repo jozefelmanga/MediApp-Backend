@@ -18,27 +18,27 @@
     },
     {
       "key": "user_service_url",
-      "value": "http://localhost:8666",
+      "value": "http://localhost:8081",
       "type": "string"
     },
     {
       "key": "doctor_service_url",
-      "value": "http://localhost:8083",
+      "value": "http://localhost:8082",
       "type": "string"
     },
     {
       "key": "booking_service_url",
-      "value": "http://localhost:8084",
+      "value": "http://localhost:8083",
       "type": "string"
     },
     {
       "key": "notification_service_url",
-      "value": "http://localhost:8667",
+      "value": "http://localhost:8084",
       "type": "string"
     },
     {
       "key": "security_service_url",
-      "value": "http://localhost:8080",
+      "value": "http://localhost:8085",
       "type": "string"
     },
     {
@@ -163,48 +163,6 @@
           "response": []
         },
         {
-          "name": "Refresh Token",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.accessToken) {",
-                  "        pm.collectionVariables.set('access_token', jsonData.accessToken);",
-                  "    }",
-                  "    if (jsonData.refreshToken) {",
-                  "        pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
-                  "    }",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}"
-            },
-            "url": {
-              "raw": "{{security_service_url}}/api/v1/auth/refresh",
-              "host": ["{{security_service_url}}"],
-              "path": ["api", "v1", "auth", "refresh"]
-            },
-            "description": "Refresh access token using refresh token"
-          },
-          "response": []
-        },
-        {
           "name": "Get JWKS (Public Keys)",
           "request": {
             "method": "GET",
@@ -303,7 +261,7 @@
               "host": ["{{user_service_url}}"],
               "path": ["api", "v1", "users", "register", "doctor"]
             },
-            "description": "Register a new doctor account (requires admin token)"
+            "description": "Register a new doctor account (requires admin token).\n\n**IMPORTANT:** This endpoint creates a user in user-service and asynchronously creates a doctor profile in doctor-service. Make sure doctor-service is running! If the profile creation fails, use 'Create Doctor Profile (Internal)' endpoint manually."
           },
           "response": []
         },
@@ -409,7 +367,7 @@
               "host": ["{{doctor_service_url}}"],
               "path": ["api", "v1", "doctors", "profiles"]
             },
-            "description": "Create a doctor profile directly in doctor-service (usually called by user-service during doctor registration)"
+            "description": "Create a doctor profile directly in doctor-service.\n\n**Use this if:** The 'Register Doctor' endpoint was called but doctor-service was not running, causing the async profile creation to fail.\n\n**Note:** The {{doctor_id}} variable is automatically set when you register a doctor via user-service."
           },
           "response": []
         },
@@ -529,19 +487,45 @@
               "raw": "{\n    \"reservationToken\": \"{{$guid}}\"\n}"
             },
             "url": {
-              "raw": "{{doctor_service_url}}/api/v1/doctors/internal/availability/{{slot_id}}/reserve",
+              "raw": "{{doctor_service_url}}/api/v1/doctors/availability/{{slot_id}}/reserve",
               "host": ["{{doctor_service_url}}"],
               "path": [
                 "api",
                 "v1",
                 "doctors",
-                "internal",
                 "availability",
                 "{{slot_id}}",
                 "reserve"
               ]
             },
             "description": "Internal endpoint used by Booking Service to reserve a slot"
+          },
+          "response": []
+        },
+        {
+          "name": "Release Slot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{doctor_service_url}}/api/v1/doctors/availability/{{slot_id}}/release",
+              "host": ["{{doctor_service_url}}"],
+              "path": [
+                "api",
+                "v1",
+                "doctors",
+                "availability",
+                "{{slot_id}}",
+                "release"
+              ]
+            },
+            "description": "Release a previously reserved slot (used for cancellation/compensation)"
           },
           "response": []
         }

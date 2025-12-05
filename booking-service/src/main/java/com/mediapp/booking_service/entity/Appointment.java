@@ -40,7 +40,7 @@ public class Appointment {
     private UUID doctorId;
 
     @Column(name = "slot_id", nullable = false, unique = true)
-    private UUID slotId;
+    private String slotId;
 
     @Column(name = "appointment_date", nullable = false)
     private LocalDate appointmentDate;

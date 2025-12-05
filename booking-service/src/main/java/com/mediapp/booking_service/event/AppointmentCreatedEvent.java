@@ -27,7 +27,7 @@ public class AppointmentCreatedEvent implements Serializable {
     private UUID appointmentId;
     private UUID patientId;
     private UUID doctorId;
-    private UUID slotId;
+    private String slotId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
     private LocalDateTime createdAt;

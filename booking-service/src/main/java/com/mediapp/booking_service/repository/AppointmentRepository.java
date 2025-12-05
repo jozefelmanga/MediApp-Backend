@@ -20,96 +20,96 @@ import java.util.UUID;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
-    /**
-     * Find all appointments for a specific patient.
-     *
-     * @param patientId the patient's UUID
-     * @param pageable  pagination information
-     * @return page of appointments
-     */
-    Page<Appointment> findByPatientIdOrderByAppointmentDateDescStartTimeDesc(UUID patientId, Pageable pageable);
+        /**
+         * Find all appointments for a specific patient.
+         *
+         * @param patientId the patient's UUID
+         * @param pageable  pagination information
+         * @return page of appointments
+         */
+        Page<Appointment> findByPatientIdOrderByAppointmentDateDescStartTimeDesc(UUID patientId, Pageable pageable);
 
-    /**
-     * Find all appointments for a patient with a specific status.
-     *
-     * @param patientId the patient's UUID
-     * @param status    the appointment status
-     * @param pageable  pagination information
-     * @return page of appointments
-     */
-    Page<Appointment> findByPatientIdAndStatusOrderByAppointmentDateDescStartTimeDesc(
-            UUID patientId, AppointmentStatus status, Pageable pageable);
+        /**
+         * Find all appointments for a patient with a specific status.
+         *
+         * @param patientId the patient's UUID
+         * @param status    the appointment status
+         * @param pageable  pagination information
+         * @return page of appointments
+         */
+        Page<Appointment> findByPatientIdAndStatusOrderByAppointmentDateDescStartTimeDesc(
+                        UUID patientId, AppointmentStatus status, Pageable pageable);
 
-    /**
-     * Find all appointments for a doctor on a specific date.
-     *
-     * @param doctorId        the doctor's UUID
-     * @param appointmentDate the date to query
-     * @return list of appointments
-     */
-    List<Appointment> findByDoctorIdAndAppointmentDateOrderByStartTimeAsc(UUID doctorId, LocalDate appointmentDate);
+        /**
+         * Find all appointments for a doctor on a specific date.
+         *
+         * @param doctorId        the doctor's UUID
+         * @param appointmentDate the date to query
+         * @return list of appointments
+         */
+        List<Appointment> findByDoctorIdAndAppointmentDateOrderByStartTimeAsc(UUID doctorId, LocalDate appointmentDate);
 
-    /**
-     * Find confirmed appointments for a doctor on a specific date.
-     *
-     * @param doctorId        the doctor's UUID
-     * @param appointmentDate the date to query
-     * @param status          the appointment status
-     * @return list of appointments
-     */
-    List<Appointment> findByDoctorIdAndAppointmentDateAndStatusOrderByStartTimeAsc(
-            UUID doctorId, LocalDate appointmentDate, AppointmentStatus status);
+        /**
+         * Find confirmed appointments for a doctor on a specific date.
+         *
+         * @param doctorId        the doctor's UUID
+         * @param appointmentDate the date to query
+         * @param status          the appointment status
+         * @return list of appointments
+         */
+        List<Appointment> findByDoctorIdAndAppointmentDateAndStatusOrderByStartTimeAsc(
+                        UUID doctorId, LocalDate appointmentDate, AppointmentStatus status);
 
-    /**
-     * Find all appointments for a doctor with pagination.
-     *
-     * @param doctorId the doctor's UUID
-     * @param pageable pagination information
-     * @return page of appointments
-     */
-    Page<Appointment> findByDoctorIdOrderByAppointmentDateDescStartTimeDesc(UUID doctorId, Pageable pageable);
+        /**
+         * Find all appointments for a doctor with pagination.
+         *
+         * @param doctorId the doctor's UUID
+         * @param pageable pagination information
+         * @return page of appointments
+         */
+        Page<Appointment> findByDoctorIdOrderByAppointmentDateDescStartTimeDesc(UUID doctorId, Pageable pageable);
 
-    /**
-     * Check if a slot is already booked (not cancelled).
-     *
-     * @param slotId the slot UUID
-     * @return true if the slot is booked
-     */
-    @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.slotId = :slotId AND a.status != 'CANCELLED'")
-    boolean existsBySlotIdAndStatusNotCancelled(@Param("slotId") UUID slotId);
+        /**
+         * Check if a slot is already booked (not cancelled).
+         *
+         * @param slotId the slot ID
+         * @return true if the slot is booked
+         */
+        @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.slotId = :slotId AND a.status != 'CANCELLED'")
+        boolean existsBySlotIdAndStatusNotCancelled(@Param("slotId") String slotId);
 
-    /**
-     * Find appointment by slot ID.
-     *
-     * @param slotId the slot UUID
-     * @return optional appointment
-     */
-    Optional<Appointment> findBySlotId(UUID slotId);
+        /**
+         * Find appointment by slot ID.
+         *
+         * @param slotId the slot ID
+         * @return optional appointment
+         */
+        Optional<Appointment> findBySlotId(String slotId);
 
-    /**
-     * Find upcoming appointments for a patient (from today onwards).
-     *
-     * @param patientId the patient's UUID
-     * @param fromDate  the start date
-     * @param status    the appointment status
-     * @param pageable  pagination information
-     * @return page of appointments
-     */
-    @Query("SELECT a FROM Appointment a WHERE a.patientId = :patientId " +
-            "AND a.appointmentDate >= :fromDate AND a.status = :status " +
-            "ORDER BY a.appointmentDate ASC, a.startTime ASC")
-    Page<Appointment> findUpcomingAppointments(
-            @Param("patientId") UUID patientId,
-            @Param("fromDate") LocalDate fromDate,
-            @Param("status") AppointmentStatus status,
-            Pageable pageable);
+        /**
+         * Find upcoming appointments for a patient (from today onwards).
+         *
+         * @param patientId the patient's UUID
+         * @param fromDate  the start date
+         * @param status    the appointment status
+         * @param pageable  pagination information
+         * @return page of appointments
+         */
+        @Query("SELECT a FROM Appointment a WHERE a.patientId = :patientId " +
+                        "AND a.appointmentDate >= :fromDate AND a.status = :status " +
+                        "ORDER BY a.appointmentDate ASC, a.startTime ASC")
+        Page<Appointment> findUpcomingAppointments(
+                        @Param("patientId") UUID patientId,
+                        @Param("fromDate") LocalDate fromDate,
+                        @Param("status") AppointmentStatus status,
+                        Pageable pageable);
 
-    /**
-     * Count appointments by status for a patient.
-     *
-     * @param patientId the patient's UUID
-     * @param status    the appointment status
-     * @return count of appointments
-     */
-    long countByPatientIdAndStatus(UUID patientId, AppointmentStatus status);
+        /**
+         * Count appointments by status for a patient.
+         *
+         * @param patientId the patient's UUID
+         * @param status    the appointment status
+         * @return count of appointments
+         */
+        long countByPatientIdAndStatus(UUID patientId, AppointmentStatus status);
 }

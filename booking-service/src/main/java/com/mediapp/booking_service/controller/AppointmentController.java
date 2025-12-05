@@ -64,15 +64,7 @@ public class AppointmentController {
     }
 
     /**
-     * Get all appointments for a patient.
-     * 
-     * GET /api/v1/appointments/patient/{patientId}
-     *
-     * @param patientId the patient ID
-     * @param page      page number (default: 0)
-     * @param size      page size (default: 10)
-     * @param status    optional status filter
-     * @return paginated list of appointments
+     * Get all appointments for a patient (with optional status filter).
      */
     @GetMapping("/patient/{patientId}")
     public ResponseEntity<PagedResponse<AppointmentDetail>> getPatientAppointments(
@@ -82,12 +74,9 @@ public class AppointmentController {
             @RequestParam(required = false) AppointmentStatus status) {
         log.info("Fetching appointments for patient: {}", patientId);
 
-        PagedResponse<AppointmentDetail> response;
-        if (status != null) {
-            response = bookingService.getPatientAppointmentsByStatus(patientId, status, page, size);
-        } else {
-            response = bookingService.getPatientAppointments(patientId, page, size);
-        }
+        var response = status != null
+                ? bookingService.getPatientAppointmentsByStatus(patientId, status, page, size)
+                : bookingService.getPatientAppointments(patientId, page, size);
 
         return ResponseEntity.ok(response);
     }

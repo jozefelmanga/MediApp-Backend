@@ -23,7 +23,7 @@ public class AppointmentDetail {
     private UUID appointmentId;
     private UUID patientId;
     private UUID doctorId;
-    private UUID slotId;
+    private String slotId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
     private AppointmentStatus status;
