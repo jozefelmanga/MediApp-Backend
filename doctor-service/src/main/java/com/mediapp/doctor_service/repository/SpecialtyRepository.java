@@ -1,13 +1,13 @@
 package com.mediapp.doctor_service.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.mediapp.doctor_service.domain.SpecialtyEntity;
 
 /**
- * Reactive repository for specialty catalog entries.
+ * JPA repository for specialty catalog entries.
  */
 @Repository
-public interface SpecialtyRepository extends ReactiveCrudRepository<SpecialtyEntity, Integer> {
+public interface SpecialtyRepository extends JpaRepository<SpecialtyEntity, Integer> {
 }

@@ -1,22 +1,35 @@
 package com.mediapp.doctor_service.repository;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.mediapp.doctor_service.domain.AvailabilitySlotEntity;
 
-import reactor.core.publisher.Flux;
-
 /**
- * Reactive repository for doctor availability slots.
+ * JPA repository for doctor availability slots.
  */
 @Repository
-public interface AvailabilitySlotRepository
-                extends ReactiveCrudRepository<AvailabilitySlotEntity, String>, AvailabilitySlotCustomRepository {
+public interface AvailabilitySlotRepository extends JpaRepository<AvailabilitySlotEntity, String> {
 
-        Flux<AvailabilitySlotEntity> findByDoctorIdAndStartTimeBetweenOrderByStartTimeAsc(String doctorId,
-                        Instant startTime,
-                        Instant endTime);
+        List<AvailabilitySlotEntity> findByDoctorIdAndStartTimeBetweenOrderByStartTimeAsc(
+                        String doctorId, Instant startTime, Instant endTime);
+
+        @Query("SELECT CASE WHEN COUNT(s) > 0 THEN true ELSE false END FROM AvailabilitySlotEntity s " +
+                        "WHERE s.doctorId = :doctorId AND s.startTime < :endTime AND s.endTime > :startTime")
+        boolean existsOverlappingSlot(@Param("doctorId") String doctorId,
+                        @Param("startTime") Instant startTime,
+                        @Param("endTime") Instant endTime);
+
+        /**
+         * Find an unreserved slot by ID for reservation.
+         */
+        @Query("SELECT s FROM AvailabilitySlotEntity s WHERE s.id = :slotId AND s.reserved = false")
+        Optional<AvailabilitySlotEntity> findUnreservedById(@Param("slotId") String slotId);
 }

@@ -1,17 +1,17 @@
 package com.mediapp.doctor_service.repository;
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.mediapp.doctor_service.domain.DoctorProfileEntity;
 
-import reactor.core.publisher.Flux;
-
 /**
- * Reactive repository for doctor profile aggregate roots.
+ * JPA repository for doctor profile aggregate roots.
  */
 @Repository
-public interface DoctorProfileRepository extends ReactiveCrudRepository<DoctorProfileEntity, String> {
+public interface DoctorProfileRepository extends JpaRepository<DoctorProfileEntity, String> {
 
-    Flux<DoctorProfileEntity> findBySpecialtyId(Integer specialtyId);
+    List<DoctorProfileEntity> findBySpecialtyId(Integer specialtyId);
 }

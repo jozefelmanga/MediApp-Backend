@@ -1,6 +1,6 @@
 package com.mediapp.user_service.domain.exception;
 
-import com.mediapp.common.error.DomainException;
+import com.mediapp.user_service.common.error.DomainException;
 
 /**
  * Convenience exception that pins a {@link UserErrorCode} to user-service

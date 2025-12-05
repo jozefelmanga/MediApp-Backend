@@ -27,7 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.mediapp.common.dto.PageResponse;
+import com.mediapp.user_service.common.dto.PageResponse;
 import com.mediapp.user_service.api.dto.DoctorRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientSummaryDto;
@@ -219,8 +219,8 @@ class UserManagementServiceTest {
 
                 PageResponse<PatientSummaryDto> response = userManagementService.listPatients(PageRequest.of(0, 20));
 
-                assertThat(response.getContent()).hasSize(1);
-                assertThat(response.getContent().get(0).email()).isEqualTo("patient@example.com");
-                assertThat(response.getPage().getTotalElements()).isEqualTo(1);
+                assertThat(response.content()).hasSize(1);
+                assertThat(response.content().get(0).email()).isEqualTo("patient@example.com");
+                assertThat(response.page().totalElements()).isEqualTo(1);
         }
 }

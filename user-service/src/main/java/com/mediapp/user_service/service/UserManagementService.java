@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.mediapp.common.dto.PageMetadata;
-import com.mediapp.common.dto.PageResponse;
+import com.mediapp.user_service.common.dto.PageMetadata;
+import com.mediapp.user_service.common.dto.PageResponse;
 import com.mediapp.user_service.api.dto.DoctorRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientProfileDto;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;

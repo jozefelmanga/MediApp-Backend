@@ -30,7 +30,6 @@ security:
   jwt:
     issuer: https://mediapp.local/security
     access-token-ttl: PT15M
-    refresh-token-ttl: P7D
   bootstrap:
     admin:
       email: admin@mediapp.local

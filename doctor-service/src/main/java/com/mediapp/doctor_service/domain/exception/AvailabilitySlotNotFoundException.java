@@ -1,6 +1,6 @@
 package com.mediapp.doctor_service.domain.exception;
 
-import com.mediapp.common.error.DomainException;
+import com.mediapp.doctor_service.common.error.DomainException;
 
 /**
  * Raised when an availability slot cannot be resolved for the provided id.

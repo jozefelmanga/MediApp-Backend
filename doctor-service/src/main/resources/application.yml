@@ -1,41 +1,37 @@
 spring:
   application:
     name: doctor-service
-  main:
-    web-application-type: reactive
-  # JDBC datasource - used to create database and run schema initialization
+  # JPA/MySQL configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/mediapp_doctor?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/mediapp_doctor?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
-  # R2DBC for reactive database access
-  r2dbc:
-    url: r2dbc:mysql://localhost:3306/mediapp_doctor?serverTimezone=UTC
-    username: root
-    password:
-    pool:
-      enabled: true
-      initial-size: 5
-      max-size: 20
-  autoconfigure:
-    exclude: com.mediapp.logging.LoggingAutoConfiguration
-
-mediapp:
-  auditing:
-    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
 
 server:
   port: 8083
+
+# Eureka client configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
-  metrics:
-    tags:
-      application: ${spring.application.name}
+        include: health,info
 
 logging:
   level:

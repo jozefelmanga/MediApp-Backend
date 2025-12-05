@@ -2,7 +2,7 @@ package com.mediapp.doctor_service.domain.exception;
 
 import org.springframework.http.HttpStatus;
 
-import com.mediapp.common.error.ErrorCode;
+import com.mediapp.doctor_service.common.error.ErrorCode;
 
 /**
  * Error codes specific to the doctor service domain.

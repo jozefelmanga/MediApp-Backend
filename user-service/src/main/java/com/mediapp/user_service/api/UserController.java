@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mediapp.common.dto.ApiResponse;
-import com.mediapp.common.dto.PageResponse;
+import com.mediapp.user_service.common.dto.ApiResponse;
+import com.mediapp.user_service.common.dto.PageResponse;
 import com.mediapp.user_service.api.dto.DoctorRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientSummaryDto;

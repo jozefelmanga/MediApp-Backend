@@ -1,6 +1,6 @@
 package com.mediapp.doctor_service.domain.exception;
 
-import com.mediapp.common.error.DomainException;
+import com.mediapp.doctor_service.common.error.DomainException;
 
 /**
  * Raised when a doctor profile cannot be found for a given identifier.

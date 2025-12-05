@@ -2,7 +2,7 @@ package com.mediapp.user_service.domain.exception;
 
 import org.springframework.http.HttpStatus;
 
-import com.mediapp.common.error.ErrorCode;
+import com.mediapp.user_service.common.error.ErrorCode;
 
 /**
  * User-service specific error catalog.

@@ -3,7 +3,6 @@ package com.mediapp.security_service.controller;
 import com.mediapp.security_service.service.AuthService;
 import com.mediapp.security_service.service.dto.AuthResponse;
 import com.mediapp.security_service.service.dto.LoginRequest;
-import com.mediapp.security_service.service.dto.RefreshTokenRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +21,5 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.authenticate(request));
-    }
-
-    @PostMapping("/refresh")
-    public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
-        return ResponseEntity.ok(authService.refresh(request));
     }
 }

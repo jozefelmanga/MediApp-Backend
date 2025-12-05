@@ -22,7 +22,4 @@ public class JwtProperties {
 
     @NotNull
     private Duration accessTokenTtl = Duration.ofMinutes(15);
-
-    @NotNull
-    private Duration refreshTokenTtl = Duration.ofDays(7);
 }

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mediapp.common.dto.ApiResponse;
+import com.mediapp.doctor_service.common.dto.ApiResponse;
 import com.mediapp.doctor_service.api.dto.AvailabilitySlotResponse;
 import com.mediapp.doctor_service.api.dto.CreateAvailabilityRequest;
 import com.mediapp.doctor_service.api.dto.CreateDoctorProfileRequest;
@@ -27,10 +27,9 @@ import com.mediapp.doctor_service.api.dto.SlotReservationResponse;
 import com.mediapp.doctor_service.service.DoctorAvailabilityService;
 
 import jakarta.validation.Valid;
-import reactor.core.publisher.Mono;
 
 /**
- * Reactive REST endpoints that expose doctor search and availability management
+ * REST endpoints that expose doctor search and availability management
  * workflows.
  */
 @RestController
@@ -45,32 +44,31 @@ public class DoctorAvailabilityController {
         }
 
         @GetMapping
-        public Mono<ResponseEntity<ApiResponse<List<DoctorProfileResponse>>>> searchBySpecialty(
+        public ResponseEntity<ApiResponse<List<DoctorProfileResponse>>> searchBySpecialty(
                         @RequestParam("specialtyId") Integer specialtyId) {
-                return doctorAvailabilityService.findDoctorsBySpecialty(specialtyId)
-                                .map(ApiResponse::success)
-                                .map(ResponseEntity::ok);
+                List<DoctorProfileResponse> doctors = doctorAvailabilityService.findDoctorsBySpecialty(specialtyId);
+                return ResponseEntity.ok(ApiResponse.success(doctors));
         }
 
         @GetMapping("/{doctorId}/availability")
-        public Mono<ResponseEntity<ApiResponse<List<AvailabilitySlotResponse>>>> getAvailability(
+        public ResponseEntity<ApiResponse<List<AvailabilitySlotResponse>>> getAvailability(
                         @PathVariable String doctorId,
                         @RequestParam(value = "from", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime from,
                         @RequestParam(value = "to", required = false) @DateTimeFormat(iso = ISO.DATE_TIME) OffsetDateTime to) {
-                return doctorAvailabilityService.getAvailability(doctorId,
+                List<AvailabilitySlotResponse> slots = doctorAvailabilityService.getAvailability(
+                                doctorId,
                                 from != null ? from.toInstant() : null,
-                                to != null ? to.toInstant() : null)
-                                .map(ApiResponse::success)
-                                .map(ResponseEntity::ok);
+                                to != null ? to.toInstant() : null);
+                return ResponseEntity.ok(ApiResponse.success(slots));
         }
 
         @PostMapping("/{doctorId}/availability")
-        public Mono<ResponseEntity<ApiResponse<List<AvailabilitySlotResponse>>>> createAvailability(
+        public ResponseEntity<ApiResponse<List<AvailabilitySlotResponse>>> createAvailability(
                         @PathVariable String doctorId,
                         @Valid @RequestBody CreateAvailabilityRequest request) {
-                return doctorAvailabilityService.createRecurringSlots(doctorId, request)
-                                .map(ApiResponse::success)
-                                .map(body -> ResponseEntity.status(HttpStatus.CREATED).body(body));
+                List<AvailabilitySlotResponse> slots = doctorAvailabilityService.createRecurringSlots(doctorId,
+                                request);
+                return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(slots));
         }
 
         /**
@@ -82,23 +80,22 @@ public class DoctorAvailabilityController {
          * @return the created doctor profile
          */
         @PostMapping("/profiles")
-        public Mono<ResponseEntity<ApiResponse<DoctorProfileResponse>>> createDoctorProfile(
+        public ResponseEntity<ApiResponse<DoctorProfileResponse>> createDoctorProfile(
                         @Valid @RequestBody CreateDoctorProfileRequest request) {
-                return doctorAvailabilityService.createDoctorProfile(
+                DoctorProfileResponse profile = doctorAvailabilityService.createDoctorProfile(
                                 request.doctorId(),
                                 request.medicalLicenseNumber(),
                                 request.specialtyId(),
-                                request.officeAddress())
-                                .map(ApiResponse::success)
-                                .map(body -> ResponseEntity.status(HttpStatus.CREATED).body(body));
+                                request.officeAddress());
+                return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(profile));
         }
 
         @PutMapping("/internal/availability/{slotId}/reserve")
-        public Mono<ResponseEntity<ApiResponse<SlotReservationResponse>>> reserveSlot(
+        public ResponseEntity<ApiResponse<SlotReservationResponse>> reserveSlot(
                         @PathVariable String slotId,
                         @Valid @RequestBody ReserveSlotRequest request) {
-                return doctorAvailabilityService.reserveSlot(slotId, request.reservationToken())
-                                .map(ApiResponse::success)
-                                .map(ResponseEntity::ok);
+                SlotReservationResponse reservation = doctorAvailabilityService.reserveSlot(slotId,
+                                request.reservationToken());
+                return ResponseEntity.ok(ApiResponse.success(reservation));
         }
 }

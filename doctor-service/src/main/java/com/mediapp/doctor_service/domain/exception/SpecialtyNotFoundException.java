@@ -1,6 +1,6 @@
 package com.mediapp.doctor_service.domain.exception;
 
-import com.mediapp.common.error.DomainException;
+import com.mediapp.doctor_service.common.error.DomainException;
 
 /**
  * Raised when the requested specialty identifier does not exist.

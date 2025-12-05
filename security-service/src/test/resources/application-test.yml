@@ -1,14 +1,14 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:securitydb;MODE=MySQL;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://${SECURITY_DB_HOST:localhost}:${SECURITY_DB_PORT:3306}/${SECURITY_DB_NAME:mediapp_security}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${SECURITY_DB_USERNAME:root}
+    password: ${SECURITY_DB_PASSWORD:}
   jpa:
     hibernate:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
     defer-datasource-initialization: true

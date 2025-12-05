@@ -61,7 +61,7 @@ public class AvailabilitySlotGenerator {
                             .reserved(false)
                             .reservationToken(null)
                             .reservedAt(null)
-                            .version(0L)
+                            .version(null)
                             .createdAt(now)
                             .updatedAt(now)
                             .build());

@@ -37,7 +37,7 @@ The application follows a microservices architecture with the following componen
 | **Doctor Service**       | `0` (Random)     | `mediapp_doctor`       | Doctor profiles & availability (Reactive) |
 | **Booking Service**      | `8084`           | `mediapp_booking`      | Appointment bookings                      |
 | **Notification Service** | `8667`           | `mediapp_notification` | Notification logs                         |
-| **Security Service**     | `8080` (default) | H2 (in-memory)         | JWT Authentication                        |
+| **Security Service**     | `8081`           | `mediapp_security`     | JWT Authentication                        |
 | **Catalogue Service**    | `8080` (default) | `catalogue_db`         | Catalogue management                      |
 
 ### External Services
@@ -82,7 +82,6 @@ The application follows a microservices architecture with the following componen
 | Spring Boot Starter Web        | REST API                     |
 | Spring Security Crypto         | Password encryption          |
 | MySQL Connector J              | MySQL driver                 |
-| H2 Database                    | Testing database             |
 | Lombok                         | Boilerplate code reduction   |
 | Common-libs                    | Shared utilities             |
 | Logging-starter                | Centralized logging          |
@@ -143,7 +142,6 @@ The application follows a microservices architecture with the following componen
 | Spring Security OAuth2 JOSE        | JWT token handling           |
 | Spring Cloud Netflix Eureka Client | Service discovery client     |
 | MySQL Connector J                  | MySQL driver                 |
-| H2 Database                        | Development/testing database |
 | Lombok                             | Boilerplate code reduction   |
 | Common-libs                        | Shared utilities             |
 | Logging-starter                    | Centralized logging          |
@@ -276,7 +274,7 @@ The application follows a microservices architecture with the following componen
 
 ---
 
-### Security Service Database (H2 in-memory or MySQL)
+### Security Service Database (`mediapp_security`)
 
 #### Table: `app_users`
 

@@ -2,7 +2,7 @@ package com.mediapp.doctor_service.domain.exception;
 
 import java.time.Instant;
 
-import com.mediapp.common.error.DomainException;
+import com.mediapp.doctor_service.common.error.DomainException;
 
 /**
  * Raised when a new slot overlaps with existing availability for the doctor.

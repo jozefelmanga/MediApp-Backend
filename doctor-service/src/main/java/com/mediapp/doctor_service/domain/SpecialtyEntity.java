@@ -1,28 +1,32 @@
 package com.mediapp.doctor_service.domain;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Reactive representation of the specialty catalog table.
+ * JPA entity representing the specialty catalog table.
  */
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("specialty")
+@Entity
+@Table(name = "specialty")
 public class SpecialtyEntity {
 
     @Id
-    @Column("specialty_id")
+    @Column(name = "specialty_id")
     private Integer id;
 
-    @Column("name")
+    @Column(name = "name")
     private String name;
 }

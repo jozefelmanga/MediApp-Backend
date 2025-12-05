@@ -2,70 +2,66 @@ package com.mediapp.doctor_service.domain;
 
 import java.time.Instant;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Reactive representation of the availability_slot table.
+ * JPA entity representing the availability_slot table.
  */
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("availability_slot")
+@Entity
+@Table(name = "availability_slot")
 public class AvailabilitySlotEntity {
 
     @Id
-    @Column("slot_id")
+    @Column(name = "slot_id")
     private String id;
 
-    @Column("doctor_id")
+    @Column(name = "doctor_id")
     private String doctorId;
 
-    @Column("start_time")
+    @Column(name = "start_time")
     private Instant startTime;
 
-    @Column("end_time")
+    @Column(name = "end_time")
     private Instant endTime;
 
-    @Column("is_reserved")
+    @Column(name = "is_reserved")
     private boolean reserved;
 
-    @Column("reservation_token")
+    @Column(name = "reservation_token")
     private String reservationToken;
 
-    @Column("reserved_at")
+    @Column(name = "reserved_at")
     private Instant reservedAt;
 
     @Version
-    @Column("version")
+    @Column(name = "version")
     private Long version;
 
-    @Column("created_at")
+    @Column(name = "created_at")
     private Instant createdAt;
 
-    @Column("updated_at")
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
-    public AvailabilitySlotEntity markReserved(String token, Instant reservedAtInstant) {
-        return AvailabilitySlotEntity.builder()
-                .id(id)
-                .doctorId(doctorId)
-                .startTime(startTime)
-                .endTime(endTime)
-                .reserved(true)
-                .reservationToken(token)
-                .reservedAt(reservedAtInstant)
-                .version(version)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .build();
+    public void markReserved(String token, Instant reservedAtInstant) {
+        this.reserved = true;
+        this.reservationToken = token;
+        this.reservedAt = reservedAtInstant;
+        this.updatedAt = reservedAtInstant;
     }
 }

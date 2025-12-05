@@ -2,52 +2,45 @@ package com.mediapp.doctor_service.domain;
 
 import java.time.Instant;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.domain.Persistable;
-import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * Reactive representation of the doctor_profile table.
+ * JPA entity representing the doctor_profile table.
  */
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("doctor_profile")
-public class DoctorProfileEntity implements Persistable<String> {
+@Entity
+@Table(name = "doctor_profile")
+public class DoctorProfileEntity {
 
     @Id
-    @Column("doctor_id")
+    @Column(name = "doctor_id")
     private String id;
 
-    @Column("medical_license_number")
+    @Column(name = "medical_license_number")
     private String medicalLicenseNumber;
 
-    @Column("specialty_id")
+    @Column(name = "specialty_id")
     private Integer specialtyId;
 
-    @Column("office_address")
+    @Column(name = "office_address")
     private String officeAddress;
 
-    @Column("created_at")
+    @Column(name = "created_at")
     private Instant createdAt;
 
-    @Column("updated_at")
+    @Column(name = "updated_at")
     private Instant updatedAt;
-
-    @Transient
-    @Builder.Default
-    private boolean isNew = true;
-
-    @Override
-    public boolean isNew() {
-        return isNew;
-    }
 }
