@@ -6,9 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -40,8 +42,13 @@ public class DoctorServiceClient {
     public SlotReservationResponse reserveSlot(UUID slotId) {
         log.info("Attempting to reserve slot: {} in doctor-service", slotId);
 
-        return restClient.put()
+        // Generate a unique reservation token for this booking
+        String reservationToken = UUID.randomUUID().toString();
+
+        DoctorServiceApiResponse<SlotReservationResponse> apiResponse = restClient.put()
                 .uri("/api/v1/doctors/availability/{slotId}/reserve", slotId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of("reservationToken", reservationToken))
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     if (response.getStatusCode() == HttpStatus.CONFLICT) {
@@ -56,7 +63,10 @@ public class DoctorServiceClient {
                     throw new DoctorServiceException("Server error from doctor-service: " +
                             response.getStatusCode());
                 })
-                .body(SlotReservationResponse.class);
+                .body(new org.springframework.core.ParameterizedTypeReference<DoctorServiceApiResponse<SlotReservationResponse>>() {
+                });
+
+        return apiResponse != null ? apiResponse.getData() : null;
     }
 
     /**
@@ -68,7 +78,7 @@ public class DoctorServiceClient {
     public SlotReservationResponse releaseSlot(UUID slotId) {
         log.info("Attempting to release slot: {} in doctor-service", slotId);
 
-        return restClient.put()
+        DoctorServiceApiResponse<SlotReservationResponse> apiResponse = restClient.put()
                 .uri("/api/v1/doctors/availability/{slotId}/release", slotId)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
@@ -79,6 +89,9 @@ public class DoctorServiceClient {
                     throw new DoctorServiceException("Server error from doctor-service: " +
                             response.getStatusCode());
                 })
-                .body(SlotReservationResponse.class);
+                .body(new org.springframework.core.ParameterizedTypeReference<DoctorServiceApiResponse<SlotReservationResponse>>() {
+                });
+
+        return apiResponse != null ? apiResponse.getData() : null;
     }
 }

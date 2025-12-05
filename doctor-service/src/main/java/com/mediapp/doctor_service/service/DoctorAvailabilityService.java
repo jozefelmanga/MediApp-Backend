@@ -146,6 +146,27 @@ public class DoctorAvailabilityService {
                 return doctorMapper.toReservationResponse(saved);
         }
 
+        /**
+         * Releases a previously reserved slot (for cancellation/compensation
+         * scenarios).
+         *
+         * @param slotId the slot ID to release
+         * @return SlotReservationResponse the slot after release
+         */
+        @Transactional
+        public SlotReservationResponse releaseSlot(String slotId) {
+                AvailabilitySlotEntity existing = availabilitySlotRepository.findById(slotId)
+                                .orElseThrow(() -> new AvailabilitySlotNotFoundException(slotId));
+
+                // Release the slot
+                existing.setReserved(false);
+                existing.setReservationToken(null);
+                existing.setReservedAt(null);
+
+                AvailabilitySlotEntity saved = availabilitySlotRepository.save(existing);
+                return doctorMapper.toReservationResponse(saved);
+        }
+
         private DoctorProfileEntity ensureDoctorExists(String doctorId) {
                 return doctorProfileRepository.findById(doctorId)
                                 .orElseThrow(() -> new DoctorNotFoundException(doctorId));

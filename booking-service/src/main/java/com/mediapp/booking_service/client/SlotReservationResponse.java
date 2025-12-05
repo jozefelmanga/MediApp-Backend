@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 /**
- * DTO representing a slot update response from doctor-service.
+ * DTO representing a slot reservation response from doctor-service.
  * Uses String for IDs since doctor-service returns String IDs.
  */
 @Data
@@ -19,8 +19,8 @@ public class SlotReservationResponse {
 
     private String slotId;
     private String doctorId;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private boolean reserved;
-    private String message;
+    private Instant startTime;
+    private Instant endTime;
+    private Instant reservedAt;
+    private String reservationToken;
 }

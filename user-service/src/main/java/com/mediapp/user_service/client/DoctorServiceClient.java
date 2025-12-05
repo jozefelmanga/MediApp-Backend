@@ -23,7 +23,7 @@ public class DoctorServiceClient {
         private final String doctorServiceUrl;
 
         public DoctorServiceClient(WebClient.Builder webClientBuilder,
-                        @Value("${services.doctor-service.url:http://localhost:8083}") String doctorServiceUrl) {
+                        @Value("${services.doctor-service.url:http://localhost:8082}") String doctorServiceUrl) {
                 this.webClient = webClientBuilder.baseUrl(doctorServiceUrl).build();
                 this.doctorServiceUrl = doctorServiceUrl;
         }

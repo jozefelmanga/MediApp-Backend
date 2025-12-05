@@ -19,9 +19,6 @@ spring:
         jdbc:
           time_zone: UTC
     defer-datasource-initialization: true
-  jackson:
-#    serialization:
-#      WRITE_DATES_AS_TIMESTAMPS: false
 
 server:
   port: 8081

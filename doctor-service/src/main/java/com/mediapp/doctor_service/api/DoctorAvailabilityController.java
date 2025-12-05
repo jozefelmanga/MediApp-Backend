@@ -90,12 +90,36 @@ public class DoctorAvailabilityController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success(profile));
         }
 
-        @PutMapping("/internal/availability/{slotId}/reserve")
+        /**
+         * Reserve an availability slot (called by booking-service).
+         * 
+         * PUT /api/v1/doctors/availability/{slotId}/reserve
+         *
+         * @param slotId  the slot ID to reserve
+         * @param request the reservation request containing token
+         * @return the reservation response
+         */
+        @PutMapping("/availability/{slotId}/reserve")
         public ResponseEntity<ApiResponse<SlotReservationResponse>> reserveSlot(
                         @PathVariable String slotId,
                         @Valid @RequestBody ReserveSlotRequest request) {
                 SlotReservationResponse reservation = doctorAvailabilityService.reserveSlot(slotId,
                                 request.reservationToken());
                 return ResponseEntity.ok(ApiResponse.success(reservation));
+        }
+
+        /**
+         * Release a previously reserved slot (for cancellation/compensation).
+         * 
+         * PUT /api/v1/doctors/availability/{slotId}/release
+         *
+         * @param slotId the slot ID to release
+         * @return the slot response after release
+         */
+        @PutMapping("/availability/{slotId}/release")
+        public ResponseEntity<ApiResponse<SlotReservationResponse>> releaseSlot(
+                        @PathVariable String slotId) {
+                SlotReservationResponse response = doctorAvailabilityService.releaseSlot(slotId);
+                return ResponseEntity.ok(ApiResponse.success(response));
         }
 }

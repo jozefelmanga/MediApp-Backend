@@ -99,7 +99,6 @@ class BookingServiceImplTest {
             when(doctorServiceClient.reserveSlot(slotId)).thenReturn(
                     SlotReservationResponse.builder()
                             .slotId(slotId.toString())
-                            .reserved(true)
                             .build());
             when(appointmentRepository.save(any(Appointment.class))).thenReturn(appointment);
             when(appointmentMapper.toConfirmation(any(), any())).thenReturn(
