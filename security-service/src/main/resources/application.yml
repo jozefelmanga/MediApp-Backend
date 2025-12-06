@@ -21,7 +21,7 @@ spring:
     defer-datasource-initialization: true
 
 server:
-  port: 8081
+  port: 8085
 
 security:
   jwt:

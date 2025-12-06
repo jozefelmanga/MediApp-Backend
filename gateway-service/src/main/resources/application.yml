@@ -5,24 +5,48 @@ spring:
     web-application-type: reactive
   cloud:
     gateway:
-      default-filters:
-        - RemoveHopByHopHeaders
-      httpclient:
-        connect-timeout: 5000
-        response-timeout: 10s
-      metrics:
-        enabled: true
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: security-service-manual
-          uri: lb://SECURITY-SERVICE
-          predicates:
-            - Path=/security-service/**
-          filters:
-            - StripPrefix=1
+      server:
+        webflux:
+          httpclient:
+            connect-timeout: 5000
+            response-timeout: 10s
+          metrics:
+            enabled: true
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+          routes:
+            - id: security-service
+              uri: lb://SECURITY-SERVICE
+              predicates:
+                - Path=/security-service/**
+              filters:
+                - StripPrefix=1
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/user-service/**
+              filters:
+                - StripPrefix=1
+            - id: doctor-service
+              uri: lb://DOCTOR-SERVICE
+              predicates:
+                - Path=/doctor-service/**
+              filters:
+                - StripPrefix=1
+            - id: booking-service
+              uri: lb://BOOKING-SERVICE
+              predicates:
+                - Path=/booking-service/**
+              filters:
+                - StripPrefix=1
+            - id: notification-service
+              uri: lb://NOTIFICATION-SERVICE
+              predicates:
+                - Path=/notification-service/**
+              filters:
+                - StripPrefix=1
 server:
   port: 8550
 
@@ -71,8 +95,10 @@ spring:
       on-profile: local
   cloud:
     gateway:
-      httpclient:
-        wiretap: true
+      server:
+        webflux:
+          httpclient:
+            wiretap: true
 logging:
   level:
     reactor.netty: INFO

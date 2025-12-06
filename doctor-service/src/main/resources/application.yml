@@ -39,4 +39,4 @@ logging:
 
 app:
   seed:
-    enabled: false
+    enabled: true

@@ -10,10 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import com.mediapp.user_service.common.dto.PageMetadata;
 import com.mediapp.user_service.common.dto.PageResponse;
+import com.mediapp.user_service.api.dto.DoctorProfileDto;
 import com.mediapp.user_service.api.dto.DoctorRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientProfileDto;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;
@@ -80,15 +80,15 @@ public class UserManagementService {
         AppUser user = persistUser(request.email(), request.password(), request.firstName(), request.lastName(),
                 UserRole.DOCTOR);
 
-        // Sync with doctor-service to create the doctor profile
-        log.info("Syncing doctor profile with doctor-service for userId: {}", user.getId());
-        doctorServiceClient.createDoctorProfileAsync(
+        // Sync with doctor-service to create the doctor profile synchronously
+        log.info("Creating doctor profile in doctor-service for userId: {}", user.getId());
+        DoctorProfileDto doctorProfile = doctorServiceClient.createDoctorProfileSync(
                 user.getId(),
                 request.medicalLicenseNumber(),
                 request.specialtyId(),
                 request.officeAddress());
 
-        return toUserDetails(user);
+        return toUserDetailsWithDoctorProfile(user, doctorProfile);
     }
 
     public UserDetailsResponse getUserDetails(Long userId) {
@@ -136,11 +136,11 @@ public class UserManagementService {
     }
 
     private String normalizeName(@NotNull String value) {
-        return StringUtils.trimWhitespace(value);
+        return value.strip();
     }
 
     private String normalizePhone(@NotNull String value) {
-        return StringUtils.trimWhitespace(value);
+        return value.strip();
     }
 
     private UserDetailsResponse toUserDetails(AppUser user) {
@@ -151,13 +151,23 @@ public class UserManagementService {
                     user.getPatientProfile().getPhoneNumber(),
                     user.getPatientProfile().getDateOfBirth());
         }
-        return new UserDetailsResponse(
+        return UserDetailsResponse.withPatientProfile(
                 user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole(),
                 patientProfileDto);
+    }
+
+    private UserDetailsResponse toUserDetailsWithDoctorProfile(AppUser user, DoctorProfileDto doctorProfile) {
+        return UserDetailsResponse.withDoctorProfile(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole(),
+                doctorProfile);
     }
 
     private PatientSummaryDto toPatientSummary(PatientProfile profile) {

@@ -27,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mediapp.user_service.common.dto.PageResponse;
+import com.mediapp.user_service.api.dto.DoctorProfileDto;
 import com.mediapp.user_service.api.dto.DoctorRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientSummaryDto;
@@ -147,12 +148,23 @@ class UserManagementServiceTest {
                                 .build();
                 when(appUserRepository.save(any(AppUser.class))).thenReturn(savedUser);
 
+                // Mock the doctor-service client to return doctor profile
+                DoctorProfileDto mockDoctorProfile = new DoctorProfileDto(
+                                1L, "MED-12345", 1, "General Practice", "123 Medical Center");
+                when(doctorServiceClient.createDoctorProfileSync(
+                                eq(1L), eq("MED-12345"), eq(1), eq("123 Medical Center")))
+                                .thenReturn(mockDoctorProfile);
+
                 UserDetailsResponse response = userManagementService.registerDoctor("admin-token", request);
 
                 verify(adminTokenValidator, times(1)).validate(eq("admin-token"));
                 verify(appUserRepository).save(any(AppUser.class));
+                verify(doctorServiceClient).createDoctorProfileSync(eq(1L), eq("MED-12345"), eq(1),
+                                eq("123 Medical Center"));
                 assertThat(response.role()).isEqualTo(UserRole.DOCTOR);
                 assertThat(response.patientProfile()).isNull();
+                assertThat(response.doctorProfile()).isNotNull();
+                assertThat(response.doctorProfile().medicalLicenseNumber()).isEqualTo("MED-12345");
         }
 
         @Test
