@@ -18,7 +18,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Root aggregate representing a MediApp user account.
+ * Root aggregate representing a MediApp user profile.
+ * Authentication is handled by security-service; this entity stores profile
+ * data only.
  */
 @Getter
 @Builder
@@ -33,11 +35,15 @@ public class AppUser {
     @Column(name = "user_id", updatable = false, nullable = false)
     private Long id;
 
+    /**
+     * Reference to the user's authentication record in security-service.
+     * This links profile data to auth credentials without storing passwords here.
+     */
+    @Column(name = "auth_user_id", nullable = false, unique = true)
+    private Long authUserId;
+
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
-
-    @Column(name = "password_hash", nullable = false, length = 255)
-    private String passwordHash;
 
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;

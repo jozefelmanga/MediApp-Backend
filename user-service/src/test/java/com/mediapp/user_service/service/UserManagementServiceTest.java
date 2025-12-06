@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.mediapp.user_service.common.dto.PageResponse;
 import com.mediapp.user_service.api.dto.DoctorProfileDto;
@@ -32,6 +32,7 @@ import com.mediapp.user_service.api.dto.DoctorRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientRegistrationRequest;
 import com.mediapp.user_service.api.dto.PatientSummaryDto;
 import com.mediapp.user_service.api.dto.UserDetailsResponse;
+import com.mediapp.user_service.client.SecurityServiceClient;
 import com.mediapp.user_service.domain.AppUser;
 import com.mediapp.user_service.domain.PatientProfile;
 import com.mediapp.user_service.domain.UserRole;
@@ -51,7 +52,7 @@ class UserManagementServiceTest {
         private PatientProfileRepository patientProfileRepository;
 
         @Mock
-        private PasswordEncoder passwordEncoder;
+        private SecurityServiceClient securityServiceClient;
 
         @Mock
         private AdminTokenValidator adminTokenValidator;
@@ -84,13 +85,21 @@ class UserManagementServiceTest {
         @Test
         void registerPatient_shouldPersistUserAndProfile() {
                 Long userId = 1L;
+                Long authUserId = 100L;
                 when(appUserRepository.existsByEmailIgnoreCase(patientRegistrationRequest.email())).thenReturn(false);
-                when(passwordEncoder.encode(patientRegistrationRequest.password())).thenReturn("encoded-pass");
+
+                // Mock security service registration
+                when(securityServiceClient.registerUser(
+                                eq(patientRegistrationRequest.email()),
+                                eq(patientRegistrationRequest.password()),
+                                eq(UserRole.PATIENT)))
+                                .thenReturn(new SecurityServiceClient.RegisterResponse(authUserId,
+                                                patientRegistrationRequest.email().toLowerCase(), Set.of("PATIENT")));
 
                 AppUser savedUser = AppUser.builder()
                                 .id(userId)
+                                .authUserId(authUserId)
                                 .email(patientRegistrationRequest.email().toLowerCase())
-                                .passwordHash("encoded-pass")
                                 .firstName(patientRegistrationRequest.firstName())
                                 .lastName(patientRegistrationRequest.lastName())
                                 .role(UserRole.PATIENT)
@@ -108,12 +117,14 @@ class UserManagementServiceTest {
 
                 UserDetailsResponse response = userManagementService.registerPatient(patientRegistrationRequest);
 
+                verify(securityServiceClient).registerUser(any(), any(), any());
                 verify(appUserRepository).save(userCaptor.capture());
                 verify(patientProfileRepository).save(patientProfileCaptor.capture());
 
                 AppUser persistedUser = userCaptor.getValue();
                 assertThat(persistedUser.getRole()).isEqualTo(UserRole.PATIENT);
                 assertThat(persistedUser.getEmail()).isEqualTo("user@example.com");
+                assertThat(persistedUser.getAuthUserId()).isEqualTo(authUserId);
                 assertThat(response.patientProfile()).isNotNull();
                 assertThat(response.patientProfile().patientId()).isEqualTo(userId);
                 assertThat(patientProfileCaptor.getValue().getUser()).isEqualTo(savedUser);
@@ -135,13 +146,22 @@ class UserManagementServiceTest {
                 DoctorRegistrationRequest request = new DoctorRegistrationRequest(
                                 "doc@example.com", "Password9", "Doc", "Tor",
                                 "MED-12345", 1, "123 Medical Center");
+                Long authUserId = 100L;
+
                 when(appUserRepository.existsByEmailIgnoreCase(request.email())).thenReturn(false);
-                when(passwordEncoder.encode(request.password())).thenReturn("encoded-pass");
+
+                // Mock security service registration
+                when(securityServiceClient.registerUser(
+                                eq(request.email()),
+                                eq(request.password()),
+                                eq(UserRole.DOCTOR)))
+                                .thenReturn(new SecurityServiceClient.RegisterResponse(authUserId,
+                                                request.email().toLowerCase(), Set.of("DOCTOR")));
 
                 AppUser savedUser = AppUser.builder()
                                 .id(1L)
+                                .authUserId(authUserId)
                                 .email(request.email().toLowerCase())
-                                .passwordHash("encoded-pass")
                                 .firstName(request.firstName())
                                 .lastName(request.lastName())
                                 .role(UserRole.DOCTOR)
@@ -158,6 +178,7 @@ class UserManagementServiceTest {
                 UserDetailsResponse response = userManagementService.registerDoctor("admin-token", request);
 
                 verify(adminTokenValidator, times(1)).validate(eq("admin-token"));
+                verify(securityServiceClient).registerUser(any(), any(), any());
                 verify(appUserRepository).save(any(AppUser.class));
                 verify(doctorServiceClient).createDoctorProfileSync(eq(1L), eq("MED-12345"), eq(1),
                                 eq("123 Medical Center"));
@@ -170,10 +191,11 @@ class UserManagementServiceTest {
         @Test
         void getUserDetails_shouldReturnDetails() {
                 Long userId = 1L;
+                Long authUserId = 100L;
                 AppUser user = AppUser.builder()
                                 .id(userId)
+                                .authUserId(authUserId)
                                 .email("patient@example.com")
-                                .passwordHash("hash")
                                 .firstName("Pat")
                                 .lastName("Ient")
                                 .role(UserRole.PATIENT)
@@ -209,10 +231,11 @@ class UserManagementServiceTest {
         @Test
         void listPatients_shouldMapPage() {
                 Long userId = 1L;
+                Long authUserId = 100L;
                 AppUser user = AppUser.builder()
                                 .id(userId)
+                                .authUserId(authUserId)
                                 .email("patient@example.com")
-                                .passwordHash("hash")
                                 .firstName("Pat")
                                 .lastName("Ient")
                                 .role(UserRole.PATIENT)

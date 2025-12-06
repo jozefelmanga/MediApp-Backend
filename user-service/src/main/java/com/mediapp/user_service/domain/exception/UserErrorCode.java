@@ -11,7 +11,8 @@ public enum UserErrorCode implements ErrorCode {
 
     EMAIL_ALREADY_USED("USR-0001", HttpStatus.CONFLICT),
     USER_NOT_FOUND("USR-0002", HttpStatus.NOT_FOUND),
-    INVALID_ADMIN_TOKEN("USR-0003", HttpStatus.FORBIDDEN);
+    INVALID_ADMIN_TOKEN("USR-0003", HttpStatus.FORBIDDEN),
+    EXTERNAL_SERVICE_ERROR("USR-0004", HttpStatus.SERVICE_UNAVAILABLE);
 
     private final String code;
     private final HttpStatus httpStatus;

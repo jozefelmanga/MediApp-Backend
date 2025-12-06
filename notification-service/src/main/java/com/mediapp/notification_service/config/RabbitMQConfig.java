@@ -45,12 +45,16 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue appointmentCreatedQueue() {
-        return QueueBuilder.durable(appointmentCreatedQueue).build();
+        return QueueBuilder.durable(appointmentCreatedQueue)
+                .withArgument("x-dead-letter-exchange", appointmentExchange + ".dlx")
+                .build();
     }
 
     @Bean
     public Queue appointmentCancelledQueue() {
-        return QueueBuilder.durable(appointmentCancelledQueue).build();
+        return QueueBuilder.durable(appointmentCancelledQueue)
+                .withArgument("x-dead-letter-exchange", appointmentExchange + ".dlx")
+                .build();
     }
 
     @Bean

@@ -13,13 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * REST controller for appointment booking operations.
- * Base URL: /api/v1/appointments
- */
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/appointments")
+@RequestMapping({ "/api/v1/appointments", "/api/v1/bookings" })
 @RequiredArgsConstructor
 public class AppointmentController {
 
@@ -27,8 +23,9 @@ public class AppointmentController {
 
     /**
      * Book a new appointment.
-     * 
-     * POST /api/v1/appointments/book
+     *
+     * Supports POST /api/v1/appointments/book and POST /api/v1/bookings/book
+     * for backwards compatibility with clients using the "bookings" base path.
      *
      * @param request the booking request
      * @return the appointment confirmation

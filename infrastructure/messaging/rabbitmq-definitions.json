@@ -30,11 +30,54 @@
       "durable": true,
       "auto_delete": false,
       "arguments": {}
+    },
+    {
+      "name": "appointment-created",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "appointment.events.dlx"
+      }
+    },
+    {
+      "name": "appointment-cancelled",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-dead-letter-exchange": "appointment.events.dlx"
+      }
+    },
+    {
+      "name": "appointment.dlq",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
     }
   ],
   "exchanges": [
     {
       "name": "notification.exchange",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "appointment.events",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "appointment.events.dlx",
       "vhost": "/",
       "type": "direct",
       "durable": true,
@@ -50,6 +93,30 @@
       "destination": "notification.queue",
       "destination_type": "queue",
       "routing_key": "notification.created",
+      "arguments": {}
+    },
+    {
+      "source": "appointment.events",
+      "vhost": "/",
+      "destination": "appointment-created",
+      "destination_type": "queue",
+      "routing_key": "appointment.created",
+      "arguments": {}
+    },
+    {
+      "source": "appointment.events",
+      "vhost": "/",
+      "destination": "appointment-cancelled",
+      "destination_type": "queue",
+      "routing_key": "appointment.cancelled",
+      "arguments": {}
+    },
+    {
+      "source": "appointment.events.dlx",
+      "vhost": "/",
+      "destination": "appointment.dlq",
+      "destination_type": "queue",
+      "routing_key": "appointment.dlq",
       "arguments": {}
     }
   ]
