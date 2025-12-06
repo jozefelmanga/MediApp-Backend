@@ -348,6 +348,24 @@ _No entity classes defined yet - service is in initial setup._
    ./mvnw spring-boot:run
    ```
 
+### Mock Data Seeding
+
+- Flip `app.seed.enabled=true` (application property or CLI argument) to activate each service's `CommandLineRunner` seeder.
+- Fixture IDs/passwords are documented in `develoment requirements/mock-data.yaml` so all microservices stay consistent.
+- Quick commands:
+
+  ```bash
+  # user-service (creates admin + sample patients)
+  cd user-service
+  ./mvnw spring-boot:run -Dspring-boot.run.arguments="--app.seed.enabled=true"
+
+  # doctor-service (populates specialty catalog)
+  cd ../doctor-service
+  ./mvnw spring-boot:run -Dspring-boot.run.arguments="--app.seed.enabled=true"
+  ```
+
+- Once seeded, rerun services without the flag for normal operation—the data remains in MySQL.
+
 ### Service Access URLs
 
 | Service              | URL                   |

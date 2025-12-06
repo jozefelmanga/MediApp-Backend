@@ -36,3 +36,7 @@ management:
 logging:
   level:
     com.mediapp.doctor_service: INFO
+
+app:
+  seed:
+    enabled: false

@@ -1,0 +1,1154 @@
+{
+  "info": {
+    "_postman_id": "mediapp-gateway-collection",
+    "name": "MediApp Gateway Collection",
+    "description": "Production-ready API collection for MediApp - All requests routed through the API Gateway.\n\nGateway URL: http://localhost:8550\n\nRouting Pattern:\n- /api/v1/auth/** → security-service\n- /api/v1/users/** → user-service\n- /api/v1/doctors/** → doctor-service\n- /api/v1/bookings/** → booking-service\n- /api/v1/notifications/** → notification-service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "gateway_url",
+      "value": "http://localhost:8550",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "change-me",
+      "type": "string"
+    },
+    {
+      "key": "patient_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "doctor_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "slot_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "appointment_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "description": "Security Service - /api/v1/auth/**",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.accessToken) {",
+                  "        pm.collectionVariables.set('access_token', jsonData.accessToken);",
+                  "    }",
+                  "    if (jsonData.refreshToken) {",
+                  "        pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                  "    }",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(jsonData.accessToken).to.be.a('string');",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/auth/login",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Authenticate user and get JWT tokens"
+          },
+          "response": []
+        },
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.accessToken) {",
+                  "        pm.collectionVariables.set('access_token', jsonData.accessToken);",
+                  "    }",
+                  "    if (jsonData.refreshToken) {",
+                  "        pm.collectionVariables.set('refresh_token', jsonData.refreshToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"admin@mediapp.com\",\n    \"password\": \"Admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/auth/login",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Login as admin to get elevated access"
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.accessToken) {",
+                  "        pm.collectionVariables.set('access_token', jsonData.accessToken);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/auth/refresh",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            },
+            "description": "Refresh the access token"
+          },
+          "response": []
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"token\": \"{{access_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/auth/validate",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "auth", "validate"]
+            },
+            "description": "Validate a JWT token"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. User Management",
+      "description": "User Service - /api/v1/users/**",
+      "item": [
+        {
+          "name": "Register Patient",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.userId) {",
+                  "        pm.collectionVariables.set('patient_id', jsonData.data.userId);",
+                  "    }",
+                  "    pm.test('Patient registered', function () {",
+                  "        pm.expect(pm.response.code).to.equal(201);",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newpatient@example.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phoneNumber\": \"+1234567890\",\n    \"dateOfBirth\": \"1990-05-15\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/users/register/patient",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "users", "register", "patient"]
+            },
+            "description": "Register a new patient account"
+          },
+          "response": []
+        },
+        {
+          "name": "Register Doctor (Admin Only)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.userId) {",
+                  "        pm.collectionVariables.set('doctor_id', jsonData.data.userId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Admin-Token",
+                "value": "{{admin_token}}",
+                "description": "Admin token required"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"newdoctor@example.com\",\n    \"password\": \"Doctor123\",\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 1,\n    \"officeAddress\": \"123 Medical Center, Suite 100\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/users/register/doctor",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "users", "register", "doctor"]
+            },
+            "description": "Register a new doctor account (requires admin token)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/users/details/{{patient_id}}",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "users", "details", "{{patient_id}}"]
+            },
+            "description": "Get user details by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/users/me",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "users", "me"]
+            },
+            "description": "Get current user's profile"
+          },
+          "response": []
+        },
+        {
+          "name": "List All Patients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/users/all/patients?page=0&size=20",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "users", "all", "patients"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            },
+            "description": "Get paginated list of patients"
+          },
+          "response": []
+        },
+        {
+          "name": "List All Doctors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/users/all/doctors?page=0&size=20",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "users", "all", "doctors"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "20" }
+              ]
+            },
+            "description": "Get paginated list of doctors"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Doctor Management",
+      "description": "Doctor Service - /api/v1/doctors/**",
+      "item": [
+        {
+          "name": "Search Doctors by Specialty",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors?specialtyId=1",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors"],
+              "query": [
+                {
+                  "key": "specialtyId",
+                  "value": "1",
+                  "description": "1=Cardiology, 2=Dermatology, 3=Neurology, 4=Pediatrics"
+                }
+              ]
+            },
+            "description": "Search doctors by specialty"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Doctors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors"]
+            },
+            "description": "Get all doctors"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/{{doctor_id}}",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "{{doctor_id}}"]
+            },
+            "description": "Get doctor details by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Doctor Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"userId\": {{doctor_id}},\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 1,\n    \"officeAddress\": \"123 Medical Center\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/profiles",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "profiles"]
+            },
+            "description": "Create a doctor profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Specialties",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/specialties",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "specialties"]
+            },
+            "description": "Get all medical specialties"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Availability",
+      "description": "Doctor Availability - /api/v1/doctors/{id}/availability",
+      "item": [
+        {
+          "name": "Get Doctor Availability",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.data && jsonData.data.length > 0) {",
+                  "        var slot = jsonData.data.find(s => s.status === 'AVAILABLE') || jsonData.data[0];",
+                  "        pm.collectionVariables.set('slot_id', slot.slotId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/{{doctor_id}}/availability",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "{{doctor_id}}", "availability"]
+            },
+            "description": "Get available slots for a doctor"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Availability (Date Range)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/{{doctor_id}}/availability?from=2025-12-01T00:00:00Z&to=2025-12-31T23:59:59Z",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "{{doctor_id}}", "availability"],
+              "query": [
+                { "key": "from", "value": "2025-12-01T00:00:00Z" },
+                { "key": "to", "value": "2025-12-31T23:59:59Z" }
+              ]
+            },
+            "description": "Get slots within date range"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Availability Slots",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"startDate\": \"2025-12-09\",\n    \"endDate\": \"2025-12-20\",\n    \"dailyStartTime\": \"09:00:00\",\n    \"dailyEndTime\": \"17:00:00\",\n    \"slotDurationMinutes\": 30,\n    \"daysOfWeek\": [\"MONDAY\", \"TUESDAY\", \"WEDNESDAY\", \"THURSDAY\", \"FRIDAY\"],\n    \"timeZone\": \"Europe/Paris\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/{{doctor_id}}/availability",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "{{doctor_id}}", "availability"]
+            },
+            "description": "Create recurring availability slots"
+          },
+          "response": []
+        },
+        {
+          "name": "Reserve Slot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"reservationToken\": \"{{$guid}}\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/availability/{{slot_id}}/reserve",
+              "host": ["{{gateway_url}}"],
+              "path": [
+                "api",
+                "v1",
+                "doctors",
+                "availability",
+                "{{slot_id}}",
+                "reserve"
+              ]
+            },
+            "description": "Reserve a slot"
+          },
+          "response": []
+        },
+        {
+          "name": "Release Slot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/availability/{{slot_id}}/release",
+              "host": ["{{gateway_url}}"],
+              "path": [
+                "api",
+                "v1",
+                "doctors",
+                "availability",
+                "{{slot_id}}",
+                "release"
+              ]
+            },
+            "description": "Release a reserved slot"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Bookings",
+      "description": "Booking Service - /api/v1/bookings/**",
+      "item": [
+        {
+          "name": "Book Appointment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.appointmentId) {",
+                  "        pm.collectionVariables.set('appointment_id', jsonData.appointmentId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patientId\": {{patient_id}},\n    \"doctorId\": {{doctor_id}},\n    \"slotId\": {{slot_id}},\n    \"appointmentDate\": \"2025-12-10\",\n    \"startTime\": \"09:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/book",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "book"]
+            },
+            "description": "Book a new appointment"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Appointment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/{{appointment_id}}",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "{{appointment_id}}"]
+            },
+            "description": "Get appointment details"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/patient/{{patient_id}}?page=0&size=10",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "patient", "{{patient_id}}"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" }
+              ]
+            },
+            "description": "Get patient's appointments"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Patient Appointments (With Status)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/patient/{{patient_id}}?page=0&size=10&status=CONFIRMED",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "patient", "{{patient_id}}"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                {
+                  "key": "status",
+                  "value": "CONFIRMED",
+                  "description": "PENDING, CONFIRMED, CANCELLED"
+                }
+              ]
+            },
+            "description": "Get appointments filtered by status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor's Today Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/doctor/{{doctor_id}}/today",
+              "host": ["{{gateway_url}}"],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "doctor",
+                "{{doctor_id}}",
+                "today"
+              ]
+            },
+            "description": "Get doctor's appointments for today"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Doctor Appointments by Date",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/doctor/{{doctor_id}}/date/2025-12-10",
+              "host": ["{{gateway_url}}"],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "doctor",
+                "{{doctor_id}}",
+                "date",
+                "2025-12-10"
+              ]
+            },
+            "description": "Get doctor's appointments for a date"
+          },
+          "response": []
+        },
+        {
+          "name": "Confirm Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/confirm/{{appointment_id}}",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "confirm", "{{appointment_id}}"]
+            },
+            "description": "Confirm a pending appointment"
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/cancel/{{appointment_id}}?reason=Patient requested",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "cancel", "{{appointment_id}}"],
+              "query": [{ "key": "reason", "value": "Patient requested" }]
+            },
+            "description": "Cancel an appointment"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Notifications",
+      "description": "Notification Service - /api/v1/notifications/**",
+      "item": [
+        {
+          "name": "Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/notifications/user/{{patient_id}}",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "notifications", "user", "{{patient_id}}"]
+            },
+            "description": "Get all notifications for user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/notifications/user/{{patient_id}}/unread",
+              "host": ["{{gateway_url}}"],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "user",
+                "{{patient_id}}",
+                "unread"
+              ]
+            },
+            "description": "Get unread notifications"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/notifications/1/read",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "notifications", "1", "read"]
+            },
+            "description": "Mark notification as read"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "7. Health Checks",
+      "description": "Service health endpoints",
+      "item": [
+        {
+          "name": "Gateway Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/actuator/health",
+              "host": ["{{gateway_url}}"],
+              "path": ["actuator", "health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gateway Routes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{gateway_url}}/actuator/gateway/routes",
+              "host": ["{{gateway_url}}"],
+              "path": ["actuator", "gateway", "routes"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "8. Complete Workflow",
+      "description": "End-to-end booking flow",
+      "item": [
+        {
+          "name": "Step 1: Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login OK', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('access_token', json.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/auth/login",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Step 2: Search Doctors",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Doctors found', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.length > 0) {",
+                  "        pm.collectionVariables.set('doctor_id', json.data[0].doctorId || json.data[0].userId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors?specialtyId=1",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors"],
+              "query": [{ "key": "specialtyId", "value": "1" }]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Step 3: Get Availability",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Availability OK', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "    var json = pm.response.json();",
+                  "    if (json.data && json.data.length > 0) {",
+                  "        var slot = json.data.find(s => s.status === 'AVAILABLE') || json.data[0];",
+                  "        pm.collectionVariables.set('slot_id', slot.slotId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/doctors/{{doctor_id}}/availability",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "doctors", "{{doctor_id}}", "availability"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Step 4: Book Appointment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Booked', () => pm.response.to.have.status(201));",
+                  "if (pm.response.code === 201) {",
+                  "    var json = pm.response.json();",
+                  "    pm.collectionVariables.set('appointment_id', json.appointmentId);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"patientId\": {{patient_id}},\n    \"doctorId\": {{doctor_id}},\n    \"slotId\": {{slot_id}},\n    \"appointmentDate\": \"2025-12-10\",\n    \"startTime\": \"09:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/book",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "book"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Step 5: Verify Appointment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Found', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": {
+              "raw": "{{gateway_url}}/api/v1/bookings/{{appointment_id}}",
+              "host": ["{{gateway_url}}"],
+              "path": ["api", "v1", "bookings", "{{appointment_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
