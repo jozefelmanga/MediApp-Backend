@@ -10,8 +10,6 @@ CREATE TABLE
         medical_license_number VARCHAR(50) NOT NULL UNIQUE,
         specialty_id INT NOT NULL,
         office_address VARCHAR(255) NOT NULL,
-        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         CONSTRAINT doctor_profile_specialty_fk FOREIGN KEY (specialty_id) REFERENCES specialty (specialty_id)
     );
 
@@ -22,11 +20,7 @@ CREATE TABLE
         start_time DATETIME NOT NULL,
         end_time DATETIME NOT NULL,
         is_reserved BOOLEAN NOT NULL DEFAULT FALSE,
-        reservation_token VARCHAR(100) UNIQUE,
-        reserved_at DATETIME NULL,
         version BIGINT NOT NULL DEFAULT 0,
-        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         CONSTRAINT availability_slot_doctor_fk FOREIGN KEY (doctor_id) REFERENCES doctor_profile (doctor_id) ON DELETE CASCADE
     );
 

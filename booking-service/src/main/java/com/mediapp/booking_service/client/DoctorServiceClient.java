@@ -10,9 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import java.util.Map;
-import java.util.UUID;
-
 /**
  * Client for communicating with the doctor-service.
  * Handles slot reservation requests.
@@ -40,13 +37,9 @@ public class DoctorServiceClient {
     public SlotReservationResponse reserveSlot(Long slotId) {
         log.info("Attempting to reserve slot: {} in doctor-service", slotId);
 
-        // Generate a unique reservation token for this booking
-        String reservationToken = UUID.randomUUID().toString();
-
         DoctorServiceApiResponse<SlotReservationResponse> apiResponse = restClient.put()
                 .uri("/api/v1/doctors/availability/{slotId}/reserve", slotId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("reservationToken", reservationToken))
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     if (response.getStatusCode() == HttpStatus.CONFLICT) {

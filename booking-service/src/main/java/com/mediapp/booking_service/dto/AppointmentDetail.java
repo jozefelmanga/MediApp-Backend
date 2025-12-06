@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -26,6 +25,4 @@ public class AppointmentDetail {
     private LocalDate appointmentDate;
     private LocalTime startTime;
     private AppointmentStatus status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

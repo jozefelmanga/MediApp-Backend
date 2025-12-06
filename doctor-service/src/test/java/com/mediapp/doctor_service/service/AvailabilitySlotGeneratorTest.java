@@ -2,12 +2,10 @@ package com.mediapp.doctor_service.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 
@@ -21,8 +19,7 @@ import com.mediapp.doctor_service.domain.AvailabilitySlotEntity;
  */
 class AvailabilitySlotGeneratorTest {
 
-    private final Clock clock = Clock.fixed(Instant.parse("2025-01-01T00:00:00Z"), ZoneOffset.UTC);
-    private final AvailabilitySlotGenerator generator = new AvailabilitySlotGenerator(clock);
+    private final AvailabilitySlotGenerator generator = new AvailabilitySlotGenerator();
 
     @Test
     void generate_shouldCreateSlotsForRequestedDays() {
@@ -45,7 +42,6 @@ class AvailabilitySlotGeneratorTest {
                     assertThat(slot.getDoctorId()).isEqualTo(doctorId);
                     assertThat(slot.isReserved()).isFalse();
                     assertThat(slot.getStartTime()).isBefore(slot.getEndTime());
-                    assertThat(slot.getCreatedAt()).isEqualTo(clock.instant());
                 });
 
         assertThat(slots.get(0).getStartTime()).isEqualTo(Instant.parse("2025-01-06T09:00:00Z"));

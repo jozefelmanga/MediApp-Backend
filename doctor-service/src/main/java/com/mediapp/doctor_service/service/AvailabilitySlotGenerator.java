@@ -1,9 +1,7 @@
 package com.mediapp.doctor_service.service;
 
-import java.time.Clock;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -23,12 +21,6 @@ import com.mediapp.doctor_service.domain.AvailabilitySlotEntity;
 @Component
 public class AvailabilitySlotGenerator {
 
-    private final Clock clock;
-
-    public AvailabilitySlotGenerator(Clock clock) {
-        this.clock = clock;
-    }
-
     public List<AvailabilitySlotEntity> generate(Long doctorId, CreateAvailabilityRequest request) {
         ZoneId zoneId = resolveZoneId(request.timeZone());
         LocalDate currentDate = request.startDate();
@@ -37,7 +29,6 @@ public class AvailabilitySlotGenerator {
         LocalTime dayEnd = request.dailyEndTime();
         int durationMinutes = request.slotDurationMinutes();
         Set<DayOfWeek> targetDays = request.daysOfWeek();
-        Instant now = Instant.now(clock);
 
         List<AvailabilitySlotEntity> slots = new ArrayList<>();
         while (!currentDate.isAfter(endDate)) {
@@ -57,11 +48,7 @@ public class AvailabilitySlotGenerator {
                             .startTime(startDateTime.toInstant())
                             .endTime(endDateTime.toInstant())
                             .reserved(false)
-                            .reservationToken(null)
-                            .reservedAt(null)
                             .version(null)
-                            .createdAt(now)
-                            .updatedAt(now)
                             .build());
                     cursor = slotEnd;
                     if (cursor.equals(dayEnd)) {

@@ -1,7 +1,5 @@
 package com.mediapp.doctor_service.domain;
 
-import java.time.Instant;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,10 +41,4 @@ public class DoctorProfileEntity {
 
     @Column(name = "office_address")
     private String officeAddress;
-
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
 }

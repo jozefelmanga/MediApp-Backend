@@ -25,7 +25,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -82,7 +81,6 @@ class BookingServiceImplTest {
                 .appointmentDate(LocalDate.now().plusDays(1))
                 .startTime(LocalTime.of(10, 0))
                 .status(AppointmentStatus.CONFIRMED)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 

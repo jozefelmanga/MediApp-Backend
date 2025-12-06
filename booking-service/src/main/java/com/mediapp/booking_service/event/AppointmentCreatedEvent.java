@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -29,5 +28,4 @@ public class AppointmentCreatedEvent implements Serializable {
     private Long slotId;
     private LocalDate appointmentDate;
     private LocalTime startTime;
-    private LocalDateTime createdAt;
 }

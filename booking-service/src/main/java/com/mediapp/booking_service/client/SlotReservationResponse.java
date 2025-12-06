@@ -20,6 +20,5 @@ public class SlotReservationResponse {
     private Long doctorId;
     private Instant startTime;
     private Instant endTime;
-    private Instant reservedAt;
-    private String reservationToken;
+    private boolean reserved;
 }

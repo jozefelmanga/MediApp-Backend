@@ -30,8 +30,6 @@ public class AppointmentMapper {
                 .appointmentDate(appointment.getAppointmentDate())
                 .startTime(appointment.getStartTime())
                 .status(appointment.getStatus())
-                .createdAt(appointment.getCreatedAt())
-                .updatedAt(appointment.getUpdatedAt())
                 .build();
     }
 
@@ -55,7 +53,6 @@ public class AppointmentMapper {
                 .appointmentDate(appointment.getAppointmentDate())
                 .startTime(appointment.getStartTime())
                 .status(appointment.getStatus())
-                .confirmedAt(appointment.getCreatedAt())
                 .message(message)
                 .build();
     }

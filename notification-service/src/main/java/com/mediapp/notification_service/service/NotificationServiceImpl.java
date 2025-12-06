@@ -1,7 +1,5 @@
 package com.mediapp.notification_service.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mediapp.notification_service.dto.AppointmentCancelledEvent;
 import com.mediapp.notification_service.dto.AppointmentCreatedEvent;
 import com.mediapp.notification_service.entity.NotificationLog;
@@ -20,7 +18,6 @@ import java.time.LocalDateTime;
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationLogRepository repository;
-    private final ObjectMapper objectMapper;
 
     /**
      * Handle an appointment created event: persist log, dedupe by eventId, and
@@ -38,20 +35,11 @@ public class NotificationServiceImpl implements NotificationService {
             return;
         }
 
-        String payload;
-        try {
-            payload = objectMapper.writeValueAsString(event);
-        } catch (JsonProcessingException e) {
-            payload = "{\"serializationError\":\"" + e.getMessage() + "\"}";
-        }
-
         NotificationLog logEntry = NotificationLog.builder()
                 .eventId(eventId)
                 .recipientUserId(event.getPatientId())
                 .messageType("APPOINTMENT_CREATED")
-                .payload(payload)
                 .status(NotificationStatus.PENDING)
-                .attempts(0)
                 .build();
 
         repository.save(logEntry);
@@ -61,14 +49,11 @@ public class NotificationServiceImpl implements NotificationService {
             sendNotification(logEntry);
             logEntry.setStatus(NotificationStatus.SENT);
             logEntry.setSentAt(LocalDateTime.now());
-            logEntry.setAttempts(logEntry.getAttempts() + 1);
             repository.save(logEntry);
             log.info("Notification sent for eventId={}", eventId);
         } catch (Exception ex) {
             log.error("Failed to send notification for eventId={}", eventId, ex);
             logEntry.setStatus(NotificationStatus.FAILED);
-            logEntry.setLastError(ex.getMessage());
-            logEntry.setAttempts(logEntry.getAttempts() + 1);
             repository.save(logEntry);
         }
     }
@@ -82,20 +67,11 @@ public class NotificationServiceImpl implements NotificationService {
             return;
         }
 
-        String payload;
-        try {
-            payload = objectMapper.writeValueAsString(event);
-        } catch (JsonProcessingException e) {
-            payload = "{\"serializationError\":\"" + e.getMessage() + "\"}";
-        }
-
         NotificationLog logEntry = NotificationLog.builder()
                 .eventId(eventId)
                 .recipientUserId(event.getPatientId())
                 .messageType("APPOINTMENT_CANCELLED")
-                .payload(payload)
                 .status(NotificationStatus.PENDING)
-                .attempts(0)
                 .build();
 
         repository.save(logEntry);
@@ -105,14 +81,11 @@ public class NotificationServiceImpl implements NotificationService {
             sendNotification(logEntry);
             logEntry.setStatus(NotificationStatus.SENT);
             logEntry.setSentAt(LocalDateTime.now());
-            logEntry.setAttempts(logEntry.getAttempts() + 1);
             repository.save(logEntry);
             log.info("Cancellation notification sent for eventId={}", eventId);
         } catch (Exception ex) {
             log.error("Failed to send cancellation notification for eventId={}", eventId, ex);
             logEntry.setStatus(NotificationStatus.FAILED);
-            logEntry.setLastError(ex.getMessage());
-            logEntry.setAttempts(logEntry.getAttempts() + 1);
             repository.save(logEntry);
         }
     }
@@ -123,9 +96,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     private void sendNotification(NotificationLog logEntry) {
         // Placeholder: integrate with email/SMS provider here.
-        log.debug("Sending notification to user={} type={} payload={}",
-                logEntry.getRecipientUserId(), logEntry.getMessageType(), logEntry.getPayload());
-
-        // Simulate transient failure path based on payload content (none by default)
+        log.debug("Sending notification to user={} type={}",
+                logEntry.getRecipientUserId(), logEntry.getMessageType());
     }
 }

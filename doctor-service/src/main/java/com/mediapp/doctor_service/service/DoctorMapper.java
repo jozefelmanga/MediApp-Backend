@@ -42,8 +42,7 @@ public class DoctorMapper {
                 .doctorId(slot.getDoctorId())
                 .startTime(slot.getStartTime())
                 .endTime(slot.getEndTime())
-                .reservedAt(slot.getReservedAt())
-                .reservationToken(slot.getReservationToken())
+                .reserved(slot.isReserved())
                 .build();
     }
 }

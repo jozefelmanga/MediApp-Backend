@@ -45,26 +45,11 @@ public class AvailabilitySlotEntity {
     @Column(name = "is_reserved")
     private boolean reserved;
 
-    @Column(name = "reservation_token")
-    private String reservationToken;
-
-    @Column(name = "reserved_at")
-    private Instant reservedAt;
-
     @Version
     @Column(name = "version")
     private Long version;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    public void markReserved(String token, Instant reservedAtInstant) {
+    public void markReserved() {
         this.reserved = true;
-        this.reservationToken = token;
-        this.reservedAt = reservedAtInstant;
-        this.updatedAt = reservedAtInstant;
     }
 }

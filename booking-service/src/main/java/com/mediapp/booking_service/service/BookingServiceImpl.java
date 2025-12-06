@@ -203,7 +203,6 @@ public class BookingServiceImpl implements BookingService {
                 .slotId(appointment.getSlotId())
                 .appointmentDate(appointment.getAppointmentDate())
                 .startTime(appointment.getStartTime())
-                .createdAt(appointment.getCreatedAt())
                 .build();
 
         try {

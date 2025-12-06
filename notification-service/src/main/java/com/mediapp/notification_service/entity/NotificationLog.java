@@ -2,7 +2,6 @@ package com.mediapp.notification_service.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -39,19 +38,6 @@ public class NotificationLog {
     @Column(name = "status")
     private NotificationStatus status;
 
-    @Column(name = "payload", columnDefinition = "text")
-    private String payload;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @Column(name = "sent_at")
     private LocalDateTime sentAt;
-
-    @Column(name = "attempts")
-    private int attempts;
-
-    @Column(name = "last_error", columnDefinition = "text")
-    private String lastError;
 }

@@ -22,7 +22,6 @@ import com.mediapp.doctor_service.api.dto.AvailabilitySlotResponse;
 import com.mediapp.doctor_service.api.dto.CreateAvailabilityRequest;
 import com.mediapp.doctor_service.api.dto.CreateDoctorProfileRequest;
 import com.mediapp.doctor_service.api.dto.DoctorProfileResponse;
-import com.mediapp.doctor_service.api.dto.ReserveSlotRequest;
 import com.mediapp.doctor_service.api.dto.SlotReservationResponse;
 import com.mediapp.doctor_service.service.DoctorAvailabilityService;
 
@@ -101,10 +100,8 @@ public class DoctorAvailabilityController {
          */
         @PutMapping("/availability/{slotId}/reserve")
         public ResponseEntity<ApiResponse<SlotReservationResponse>> reserveSlot(
-                        @PathVariable Long slotId,
-                        @Valid @RequestBody ReserveSlotRequest request) {
-                SlotReservationResponse reservation = doctorAvailabilityService.reserveSlot(slotId,
-                                request.reservationToken());
+                        @PathVariable Long slotId) {
+                SlotReservationResponse reservation = doctorAvailabilityService.reserveSlot(slotId);
                 return ResponseEntity.ok(ApiResponse.success(reservation));
         }
 

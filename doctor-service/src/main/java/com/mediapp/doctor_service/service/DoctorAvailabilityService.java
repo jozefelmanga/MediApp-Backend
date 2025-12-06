@@ -116,8 +116,6 @@ public class DoctorAvailabilityService {
                                 .medicalLicenseNumber(medicalLicenseNumber)
                                 .specialtyId(specialtyId)
                                 .officeAddress(officeAddress)
-                                .createdAt(Instant.now(clock))
-                                .updatedAt(Instant.now(clock))
                                 .build();
 
                 DoctorProfileEntity saved = doctorProfileRepository.save(profile);
@@ -125,7 +123,7 @@ public class DoctorAvailabilityService {
         }
 
         @Transactional
-        public SlotReservationResponse reserveSlot(Long slotId, String reservationToken) {
+        public SlotReservationResponse reserveSlot(Long slotId) {
                 // First check if slot exists
                 AvailabilitySlotEntity existing = availabilitySlotRepository.findById(slotId)
                                 .orElseThrow(() -> new AvailabilitySlotNotFoundException(slotId));
@@ -136,10 +134,7 @@ public class DoctorAvailabilityService {
                 }
 
                 // Reserve the slot
-                Instant now = Instant.now(clock);
                 existing.setReserved(true);
-                existing.setReservationToken(reservationToken);
-                existing.setReservedAt(now);
 
                 AvailabilitySlotEntity saved = availabilitySlotRepository.save(existing);
                 return doctorMapper.toReservationResponse(saved);
@@ -159,8 +154,6 @@ public class DoctorAvailabilityService {
 
                 // Release the slot
                 existing.setReserved(false);
-                existing.setReservationToken(null);
-                existing.setReservedAt(null);
 
                 AvailabilitySlotEntity saved = availabilitySlotRepository.save(existing);
                 return doctorMapper.toReservationResponse(saved);
