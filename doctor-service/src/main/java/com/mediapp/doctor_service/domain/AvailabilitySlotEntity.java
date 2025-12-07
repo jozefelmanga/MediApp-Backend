@@ -43,13 +43,13 @@ public class AvailabilitySlotEntity {
     private Instant endTime;
 
     @Column(name = "is_reserved")
-    private boolean reserved;
+    private boolean isReserved;
 
     @Version
     @Column(name = "version")
     private Long version;
 
     public void markReserved() {
-        this.reserved = true;
+        this.isReserved = true;
     }
 }

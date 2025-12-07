@@ -29,6 +29,6 @@ public interface AvailabilitySlotRepository extends JpaRepository<AvailabilitySl
         /**
          * Find an unreserved slot by ID for reservation.
          */
-        @Query("SELECT s FROM AvailabilitySlotEntity s WHERE s.id = :slotId AND s.reserved = false")
+        @Query("SELECT s FROM AvailabilitySlotEntity s WHERE s.id = :slotId AND s.isReserved = false")
         Optional<AvailabilitySlotEntity> findUnreservedById(@Param("slotId") Long slotId);
 }

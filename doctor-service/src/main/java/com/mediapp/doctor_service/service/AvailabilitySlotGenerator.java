@@ -47,7 +47,7 @@ public class AvailabilitySlotGenerator {
                             .doctorId(doctorId)
                             .startTime(startDateTime.toInstant())
                             .endTime(endDateTime.toInstant())
-                            .reserved(false)
+                            .isReserved(false)
                             .version(null)
                             .build());
                     cursor = slotEnd;

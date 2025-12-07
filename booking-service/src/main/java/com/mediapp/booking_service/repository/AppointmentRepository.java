@@ -83,7 +83,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
          * @param slotId the slot ID
          * @return optional appointment
          */
-        Optional<Appointment> findBySlotId(String slotId);
+        Optional<Appointment> findBySlotId(Long slotId);
 
         /**
          * Find upcoming appointments for a patient (from today onwards).
