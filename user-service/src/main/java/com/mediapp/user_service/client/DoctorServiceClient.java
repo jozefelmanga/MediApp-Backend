@@ -13,6 +13,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import com.mediapp.user_service.api.dto.DoctorProfileDto;
 
 import reactor.core.publisher.Mono;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 /**
  * REST client for communicating with the doctor-service.
@@ -25,7 +26,7 @@ public class DoctorServiceClient {
         private final WebClient webClient;
 
         public DoctorServiceClient(WebClient.Builder webClientBuilder,
-                        @Value("${services.doctor-service.url:http://localhost:8082}") String doctorServiceUrl) {
+                        @Value("${services.doctor-service.url:http://doctor-service}") String doctorServiceUrl) {
                 this.webClient = webClientBuilder.baseUrl(doctorServiceUrl).build();
         }
 
@@ -69,6 +70,14 @@ public class DoctorServiceClient {
                         }
                         log.warn("Empty response received from doctor-service for doctorId: {}", doctorId);
                         return null;
+                } catch (WebClientResponseException e) {
+                        log.error("Doctor-service returned error while creating profile: status={}, body={}",
+                                        e.getStatusCode(), e.getResponseBodyAsString());
+                        throw new RuntimeException(
+                                        "Failed to create doctor profile in doctor-service: " + e.getStatusCode()
+                                                        + " - "
+                                                        + e.getResponseBodyAsString(),
+                                        e);
                 } catch (Exception e) {
                         log.error("Failed to create doctor profile for doctorId: {}. Error: {}", doctorId,
                                         e.getMessage());

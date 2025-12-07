@@ -128,7 +128,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"admin@mediapp.com\",\n    \"password\": \"Admin123\"\n}"
+              "raw": "{\n    \"email\": \"admin@mediapp.local\",\n    \"password\": \"ChangeMe123!\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/api/v1/auth/login",
@@ -282,7 +282,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"newdoctor@example.com\",\n    \"password\": \"Doctor123\",\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 1,\n    \"officeAddress\": \"123 Medical Center, Suite 100\"\n}"
+              "raw": "{\n    \"email\": \"newdoctor@example.com\",\n    \"password\": \"Doctor123\",\n    \"firstName\": \"Jane\",\n    \"lastName\": \"Smith\",\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 101,\n    \"officeAddress\": \"123 Medical Center, Suite 100\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/api/v1/users/register/doctor",
@@ -399,7 +399,7 @@
               }
             ],
             "url": {
-              "raw": "{{gateway_url}}/api/v1/doctors?specialtyId=1",
+              "raw": "{{gateway_url}}/api/v1/doctors?specialtyId=101",
               "host": ["{{gateway_url}}"],
               "path": ["api", "v1", "doctors"],
               "query": [
@@ -471,7 +471,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"userId\": {{doctor_id}},\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 1,\n    \"officeAddress\": \"123 Medical Center\"\n}"
+              "raw": "{\n    \"userId\": {{doctor_id}},\n    \"medicalLicenseNumber\": \"MED-12345\",\n    \"specialtyId\": 101,\n    \"officeAddress\": \"123 Medical Center\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/api/v1/doctors/profiles",
@@ -1046,10 +1046,10 @@
               { "key": "Authorization", "value": "Bearer {{access_token}}" }
             ],
             "url": {
-              "raw": "{{gateway_url}}/api/v1/doctors?specialtyId=1",
+              "raw": "{{gateway_url}}/api/v1/doctors?specialtyId=101",
               "host": ["{{gateway_url}}"],
               "path": ["api", "v1", "doctors"],
-              "query": [{ "key": "specialtyId", "value": "1" }]
+              "query": [{ "key": "specialtyId", "value": "101" }]
             }
           },
           "response": []

@@ -26,7 +26,7 @@ public class SecurityServiceClient {
     private final WebClient webClient;
 
     public SecurityServiceClient(WebClient.Builder webClientBuilder,
-            @Value("${services.security-service.url:http://localhost:8085}") String securityServiceUrl) {
+            @Value("${services.security-service.url:http://security-service}") String securityServiceUrl) {
         this.webClient = webClientBuilder.baseUrl(securityServiceUrl).build();
     }
 

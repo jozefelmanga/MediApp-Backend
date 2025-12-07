@@ -1,4 +1,4 @@
-package com.mediapp.user_service.config;
+package com.mediapp.booking_service.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
