@@ -26,7 +26,7 @@ flowchart TB
         USER["User Service<br/>:8666<br/>(REST API)"]
         DOC["Doctor Service<br/>:8083<br/>(REST API)"]
         BOOK["Booking Service<br/>:8084<br/>(REST API)"]
-        NOTIF["Notification Service<br/>:8667<br/>(RabbitMQ Consumer)"
+        NOTIF["Notification Service<br/>:8667<br/>(RabbitMQ Consumer)"]
     end
 
     subgraph Messaging["📨 Message Broker"]
