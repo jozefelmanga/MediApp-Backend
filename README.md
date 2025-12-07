@@ -8,6 +8,7 @@ A microservices-based medical appointment booking application built with Spring 
 - [Microservices & Ports](#microservices--ports)
 - [Libraries Used](#libraries-used)
 - [Database Schemas](#database-schemas)
+- [Known Limitations](#️-known-limitations)
 - [Getting Started](#getting-started)
 
 ---
@@ -17,13 +18,12 @@ A microservices-based medical appointment booking application built with Spring 
 The application follows a microservices architecture with the following components:
 
 - **Discovery Server (Eureka)** - Service registry for service discovery
-- **Gateway Service** - API Gateway for routing requests
-- **User Service** - User account management
-- **Doctor Service** - Doctor profiles and availability management (Reactive)
-- **Booking Service** - Appointment booking management
-- **Notification Service** - Notification handling via RabbitMQ
+- **Gateway Service** - API Gateway for routing requests (WebFlux)
 - **Security Service** - Authentication and authorization with JWT
-- **Catalogue Service** - Catalogue management
+- **User Service** - User account management
+- **Doctor Service** - Doctor profiles and availability management
+- **Booking Service** - Appointment booking management with RabbitMQ events
+- **Notification Service** - Notification handling via RabbitMQ
 
 ---
 
@@ -34,7 +34,7 @@ The application follows a microservices architecture with the following componen
 | **Discovery Server**     | `8761`           | None                   | Eureka Service Registry                   |
 | **Gateway Service**      | `8550`           | None                   | API Gateway (WebFlux)                     |
 | **User Service**         | `8666`           | `mediapp_user`         | User management                           |
-| **Doctor Service**       | `0` (Random)     | `mediapp_doctor`       | Doctor profiles & availability (Reactive) |
+| **Doctor Service**       | `0` (Random)     | `mediapp_doctor`       | Doctor profiles & availability            |
 | **Booking Service**      | `8084`           | `mediapp_booking`      | Appointment bookings                      |
 | **Notification Service** | `8667`           | `mediapp_notification` | Notification logs                         |
 | **Security Service**     | `8081`           | `mediapp_security`     | JWT Authentication                        |
@@ -88,20 +88,15 @@ The application follows a microservices architecture with the following componen
 
 ### Doctor Service
 
-| Library                                           | Purpose                               |
-| ------------------------------------------------- | ------------------------------------- |
-| Spring Boot Starter Actuator                      | Health checks and monitoring          |
-| Spring Boot Starter Data R2DBC                    | Reactive database operations          |
-| Spring Boot Starter Validation                    | Request validation                    |
-| Spring Boot Starter WebFlux                       | Reactive REST API                     |
-| Spring Cloud Circuit Breaker Reactor Resilience4j | Fault tolerance                       |
-| R2DBC MySQL                                       | Reactive MySQL driver                 |
-| MySQL Connector J                                 | JDBC driver for schema initialization |
-| Micrometer Prometheus                             | Metrics export                        |
-| Testcontainers (MySQL, R2DBC)                     | Integration testing                   |
-| Lombok                                            | Boilerplate code reduction            |
-| Common-libs                                       | Shared utilities                      |
-| Logging-starter                                   | Centralized logging                   |
+| Library                            | Purpose                      |
+| ---------------------------------- | ---------------------------- |
+| Spring Boot Starter Actuator       | Health checks and monitoring |
+| Spring Boot Starter Data JPA       | Database operations          |
+| Spring Boot Starter Validation     | Request validation           |
+| Spring Boot Starter Web            | REST API                     |
+| Spring Cloud Netflix Eureka Client | Service discovery client     |
+| MySQL Connector J                  | MySQL driver                 |
+| Lombok                             | Boilerplate code reduction   |
 
 ### Booking Service
 
@@ -313,9 +308,64 @@ The application follows a microservices architecture with the following componen
 
 ### Catalogue Service Database (`catalogue_db`)
 
+
 _No entity classes defined yet - service is in initial setup._
 
 ---
+
+## ⚠️ Known Limitations
+
+> **IMPORTANT**: This is a **school project** demonstrating microservices architecture concepts. It is **NOT production-ready** and has several known limitations.
+
+### 🔴 Critical Issues
+
+**Security Vulnerabilities:**
+- **CORS Configuration**: Allows ALL origins (`*`) - exposes system to CSRF attacks
+- **JWT Secret Management**: Not properly configured with environment-specific secrets
+- **No Gateway JWT Validation**: API Gateway forwards requests without token validation
+- **Public Registration Endpoint**: Anyone can create accounts (acceptable for demo)
+
+**Data Consistency:**
+- **No Distributed Transaction Handling**: Cross-service operations (user registration, doctor onboarding) can leave orphaned data if partial failures occur
+- **Saga Pattern Missing**: No compensating transactions for failed multi-service workflows
+- **Event Publishing Inside DB Transactions**: RabbitMQ events published within database transactions can cause inconsistent state
+
+**Operational:**
+- **No HTTPS/TLS**: All communication over HTTP (acceptable for local development)
+- **Hardcoded Infrastructure**: RabbitMQ and database connection details not externalized
+- **No Secrets Management**: Database credentials in plain text configuration files
+
+### 🟡 High Priority Improvements Needed
+
+- Implement idempotency keys for appointment booking (prevents duplicate reservations)
+- Add retry logic for optimistic locking conflicts in doctor-service
+- Configure reservation token expiry (TTL) to prevent abandoned slot locks
+- Fix Gateway YAML configuration structure (discovery.locator incorrectly nested)
+- Reduce default logging verbosity (currently DEBUG/TRACE in gateway)
+
+### ✅ Recent Fixes
+
+- ✅ Migrated all IDs from `BINARY(16)` to `BIGINT` for consistency
+- ✅ Added cross-service foreign key columns (`auth_user_id`, `user_id`)
+- ✅ Removed duplicate password storage from user-service
+- ✅ Fixed entity-schema type mismatches
+
+### 📊 Deployment Readiness
+
+| Environment | Status | Notes |
+|-------------|--------|-------|
+| **Local Development** | ✅ Ready | Safe for learning and demonstration |
+| **School Demo** | ✅ Ready | Acceptable for academic submission |
+| **Staging/Testing** | ⚠️ Not Ready | Security issues must be fixed first |
+| **Production** | 🔴 **NOT READY** | Critical vulnerabilities present |
+
+### 📖 Comprehensive Audit Report
+
+For detailed architectural analysis, security assessment, and prioritized recommendations, see:
+- **[Comprehensive Audit Report](https://github.com/yourusername/mediapp/blob/main/AUDIT_REPORT.md)** _(if available in artifacts directory)_
+
+---
+
 
 ## Getting Started
 
@@ -406,3 +456,18 @@ mini-projet/
 - **MySQL** 8.x
 - **RabbitMQ** 3.x
 - **Maven** for build management
+
+---
+
+## 📋 Additional Documentation
+
+- **[DATABASE_FIXES_SUMMARY.md](DATABASE_FIXES_SUMMARY.md)** - Recent database schema migration details
+- **[VERIFICATION_CHECKLIST.md](VERIFICATION_CHECKLIST.md)** - Testing and deployment verification steps
+- **[COURSE_SCOPE.md](COURSE_SCOPE.md)** - University course requirements and technology constraints
+- **Audit Report** - Comprehensive architectural review (see artifacts directory if available)
+
+---
+
+**Last Updated**: December 8, 2025  
+**Status**: School Project - Demonstration Ready, Not Production Ready  
+**Note**: This README has been updated to reflect actual implementation details based on comprehensive code audit.
