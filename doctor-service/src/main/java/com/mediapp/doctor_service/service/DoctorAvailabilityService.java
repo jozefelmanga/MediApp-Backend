@@ -134,7 +134,7 @@ public class DoctorAvailabilityService {
                 }
 
                 // Reserve the slot
-                existing.setIsReserved(true);
+                existing.setReserved(true);
 
                 AvailabilitySlotEntity saved = availabilitySlotRepository.save(existing);
                 return doctorMapper.toReservationResponse(saved);
@@ -153,7 +153,7 @@ public class DoctorAvailabilityService {
                                 .orElseThrow(() -> new AvailabilitySlotNotFoundException(slotId));
 
                 // Release the slot
-                existing.setIsReserved(false);
+                existing.setReserved(false);
 
                 AvailabilitySlotEntity saved = availabilitySlotRepository.save(existing);
                 return doctorMapper.toReservationResponse(saved);

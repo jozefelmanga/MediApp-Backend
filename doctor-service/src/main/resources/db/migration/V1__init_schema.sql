@@ -6,17 +6,19 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS doctor_profile (
-        doctor_id CHAR(36) PRIMARY KEY,
+        doctor_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        user_id BIGINT NOT NULL UNIQUE,
         medical_license_number VARCHAR(50) NOT NULL UNIQUE,
         specialty_id INT NOT NULL,
         office_address VARCHAR(255) NOT NULL,
-        CONSTRAINT doctor_profile_specialty_fk FOREIGN KEY (specialty_id) REFERENCES specialty (specialty_id)
+        CONSTRAINT doctor_profile_specialty_fk FOREIGN KEY (specialty_id) REFERENCES specialty (specialty_id),
+        INDEX idx_user_id (user_id)
     );
 
 CREATE TABLE
     IF NOT EXISTS availability_slot (
-        slot_id CHAR(36) PRIMARY KEY,
-        doctor_id CHAR(36) NOT NULL,
+        slot_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        doctor_id BIGINT NOT NULL,
         start_time DATETIME NOT NULL,
         end_time DATETIME NOT NULL,
         is_reserved BOOLEAN NOT NULL DEFAULT FALSE,
