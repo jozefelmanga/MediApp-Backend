@@ -13,6 +13,7 @@ import com.mediapp.doctor_service.api.dto.AvailabilitySlotResponse;
 import com.mediapp.doctor_service.api.dto.CreateAvailabilityRequest;
 import com.mediapp.doctor_service.api.dto.DoctorProfileResponse;
 import com.mediapp.doctor_service.api.dto.SlotReservationResponse;
+import com.mediapp.doctor_service.api.dto.SpecialtyResponse;
 import com.mediapp.doctor_service.domain.AvailabilitySlotEntity;
 import com.mediapp.doctor_service.domain.DoctorProfileEntity;
 import com.mediapp.doctor_service.domain.SpecialtyEntity;
@@ -55,12 +56,35 @@ public class DoctorAvailabilityService {
         }
 
         public List<DoctorProfileResponse> findDoctorsBySpecialty(Integer specialtyId) {
+                // If no specialtyId provided, return all doctors
+                if (specialtyId == null) {
+                        return doctorProfileRepository.findAll().stream()
+                                        .map(doctor -> {
+                                                SpecialtyEntity specialty = specialtyRepository
+                                                                .findById(doctor.getSpecialtyId())
+                                                                .orElse(null);
+                                                return doctorMapper.toDoctorProfileResponse(doctor, specialty);
+                                        })
+                                        .collect(Collectors.toList());
+                }
+
+                // Filter by specialty
                 SpecialtyEntity specialty = specialtyRepository.findById(specialtyId)
                                 .orElseThrow(() -> new SpecialtyNotFoundException(specialtyId));
 
                 return doctorProfileRepository.findBySpecialtyId(specialtyId).stream()
                                 .map(doctor -> doctorMapper.toDoctorProfileResponse(doctor, specialty))
                                 .collect(Collectors.toList());
+        }
+
+        public DoctorProfileResponse findDoctorById(Long doctorId) {
+                DoctorProfileEntity doctor = doctorProfileRepository.findById(doctorId)
+                                .orElseThrow(() -> new DoctorNotFoundException(doctorId));
+
+                SpecialtyEntity specialty = specialtyRepository.findById(doctor.getSpecialtyId())
+                                .orElse(null);
+
+                return doctorMapper.toDoctorProfileResponse(doctor, specialty);
         }
 
         public List<AvailabilitySlotResponse> getAvailability(Long doctorId, Instant from, Instant to) {
@@ -157,6 +181,17 @@ public class DoctorAvailabilityService {
 
                 AvailabilitySlotEntity saved = availabilitySlotRepository.save(existing);
                 return doctorMapper.toReservationResponse(saved);
+        }
+
+        /**
+         * Return all specialties in the catalog.
+         *
+         * @return list of specialties
+         */
+        public List<SpecialtyResponse> getAllSpecialties() {
+                return specialtyRepository.findAll().stream()
+                                .map(s -> new SpecialtyResponse(s.getId(), s.getName()))
+                                .collect(Collectors.toList());
         }
 
         private DoctorProfileEntity ensureDoctorExists(Long doctorId) {

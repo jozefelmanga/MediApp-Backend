@@ -23,6 +23,7 @@ import com.mediapp.doctor_service.api.dto.CreateAvailabilityRequest;
 import com.mediapp.doctor_service.api.dto.CreateDoctorProfileRequest;
 import com.mediapp.doctor_service.api.dto.DoctorProfileResponse;
 import com.mediapp.doctor_service.api.dto.SlotReservationResponse;
+import com.mediapp.doctor_service.api.dto.SpecialtyResponse;
 import com.mediapp.doctor_service.service.DoctorAvailabilityService;
 
 import jakarta.validation.Valid;
@@ -47,6 +48,13 @@ public class DoctorAvailabilityController {
                         @RequestParam(value = "specialtyId", required = false) Integer specialtyId) {
                 List<DoctorProfileResponse> doctors = doctorAvailabilityService.findDoctorsBySpecialty(specialtyId);
                 return ResponseEntity.ok(ApiResponse.success(doctors));
+        }
+
+        @GetMapping("/{doctorId}")
+        public ResponseEntity<ApiResponse<DoctorProfileResponse>> getDoctorById(
+                        @PathVariable Long doctorId) {
+                DoctorProfileResponse doctor = doctorAvailabilityService.findDoctorById(doctorId);
+                return ResponseEntity.ok(ApiResponse.success(doctor));
         }
 
         @GetMapping("/{doctorId}/availability")
@@ -118,5 +126,11 @@ public class DoctorAvailabilityController {
                         @PathVariable Long slotId) {
                 SlotReservationResponse response = doctorAvailabilityService.releaseSlot(slotId);
                 return ResponseEntity.ok(ApiResponse.success(response));
+        }
+
+        @GetMapping("/specialties")
+        public ResponseEntity<ApiResponse<List<SpecialtyResponse>>> getAllSpecialties() {
+                List<SpecialtyResponse> specialties = doctorAvailabilityService.getAllSpecialties();
+                return ResponseEntity.ok(ApiResponse.success(specialties));
         }
 }
