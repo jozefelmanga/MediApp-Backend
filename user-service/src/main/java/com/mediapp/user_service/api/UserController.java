@@ -58,6 +58,19 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 
+    /**
+     * Returns the details for the currently authenticated user.
+     *
+     * This endpoint expects a header `X-Auth-User-Id` to be present (set by the
+     * gateway or security layer) containing the numeric auth user id.
+     */
+    @GetMapping(path = "/me")
+    public ResponseEntity<ApiResponse<UserDetailsResponse>> getCurrentUser(
+            @RequestHeader("X-Auth-User-Id") Long authUserId) {
+        UserDetailsResponse response = userManagementService.getUserDetailsByAuthUserId(authUserId);
+        return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
     @GetMapping(path = "/all/patients")
     public ResponseEntity<ApiResponse<PageResponse<PatientSummaryDto>>> listPatients(
             @PageableDefault(size = 20) Pageable pageable) {

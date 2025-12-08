@@ -120,6 +120,13 @@ public class UserManagementService {
         return toUserDetails(user);
     }
 
+    public UserDetailsResponse getUserDetailsByAuthUserId(Long authUserId) {
+        AppUser user = appUserRepository.findWithPatientProfileByAuthUserId(authUserId)
+                .orElseThrow(() -> new UserDomainException(UserErrorCode.USER_NOT_FOUND,
+                        "User not found for authUserId: " + authUserId));
+        return toUserDetails(user);
+    }
+
     public PageResponse<PatientSummaryDto> listPatients(Pageable pageable) {
         Page<PatientProfile> page = patientProfileRepository.findAllBy(pageable);
         List<PatientSummaryDto> content = page.stream()

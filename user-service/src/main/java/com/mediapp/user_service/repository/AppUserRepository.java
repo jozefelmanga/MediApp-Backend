@@ -15,4 +15,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     @EntityGraph(attributePaths = "patientProfile")
     Optional<AppUser> findWithPatientProfileById(Long id);
+
+    @EntityGraph(attributePaths = "patientProfile")
+    Optional<AppUser> findWithPatientProfileByAuthUserId(Long authUserId);
 }
