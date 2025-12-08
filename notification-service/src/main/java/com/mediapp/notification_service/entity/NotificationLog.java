@@ -38,6 +38,12 @@ public class NotificationLog {
     @Column(name = "status")
     private NotificationStatus status;
 
+    @Column(name = "is_read")
+    private Boolean read;
+
+    @Column(name = "read_at")
+    private java.time.LocalDateTime readAt;
+
     @Column(name = "sent_at")
     private LocalDateTime sentAt;
 }

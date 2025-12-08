@@ -40,6 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .recipientUserId(event.getPatientId())
                 .messageType("APPOINTMENT_CREATED")
                 .status(NotificationStatus.PENDING)
+                .read(false)
                 .build();
 
         repository.save(logEntry);
@@ -72,6 +73,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .recipientUserId(event.getPatientId())
                 .messageType("APPOINTMENT_CANCELLED")
                 .status(NotificationStatus.PENDING)
+                .read(false)
                 .build();
 
         repository.save(logEntry);

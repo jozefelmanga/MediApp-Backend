@@ -11,4 +11,8 @@ public interface NotificationLogRepository extends JpaRepository<NotificationLog
     Optional<NotificationLog> findByEventId(Long eventId);
 
     boolean existsByEventId(Long eventId);
+
+    java.util.List<NotificationLog> findAllByRecipientUserId(Long recipientUserId);
+
+    java.util.List<NotificationLog> findAllByRecipientUserIdAndReadFalse(Long recipientUserId);
 }
