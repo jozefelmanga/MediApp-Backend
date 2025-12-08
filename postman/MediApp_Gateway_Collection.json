@@ -518,7 +518,8 @@
                   "if (pm.response.code === 200) {",
                   "    var jsonData = pm.response.json();",
                   "    if (jsonData.data && jsonData.data.length > 0) {",
-                  "        var slot = jsonData.data.find(s => s.status === 'AVAILABLE') || jsonData.data[0];",
+                  "        // availability slots use 'reserved' boolean; pick an unreserved slot if present",
+                  "        var slot = jsonData.data.find(s => s.reserved === false) || jsonData.data[0];",
                   "        pm.collectionVariables.set('slot_id', slot.slotId);",
                   "    }",
                   "}"
@@ -1065,7 +1066,8 @@
                   "if (pm.response.code === 200) {",
                   "    var json = pm.response.json();",
                   "    if (json.data && json.data.length > 0) {",
-                  "        var slot = json.data.find(s => s.status === 'AVAILABLE') || json.data[0];",
+                  "        // select an available slot where 'reserved' is false",
+                  "        var slot = json.data.find(s => s.reserved === false) || json.data[0];",
                   "        pm.collectionVariables.set('slot_id', slot.slotId);",
                   "    }",
                   "}"
