@@ -44,7 +44,7 @@ public class DoctorAvailabilityController {
 
         @GetMapping
         public ResponseEntity<ApiResponse<List<DoctorProfileResponse>>> searchBySpecialty(
-                        @RequestParam("specialtyId") Integer specialtyId) {
+                        @RequestParam(value = "specialtyId", required = false) Integer specialtyId) {
                 List<DoctorProfileResponse> doctors = doctorAvailabilityService.findDoctorsBySpecialty(specialtyId);
                 return ResponseEntity.ok(ApiResponse.success(doctors));
         }

@@ -86,7 +86,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\"\n}"
+              "raw": "{\n    \"email\": \"patient@mediapp.com\",\n    \"password\": \"Patient123\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/api/v1/auth/login",
@@ -238,7 +238,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"newpatient@example.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phoneNumber\": \"+1234567890\",\n    \"dateOfBirth\": \"1990-05-15\"\n}"
+              "raw": "{\n    \"email\": \"newpatient@example.com\",\n    \"password\": \"Patient123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phoneNumber\": \"+1234567890\",\n    \"dateOfBirth\": \"1990-05-15\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/api/v1/users/register/patient",
@@ -1011,7 +1011,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\"\n}"
+              "raw": "{\n    \"email\": \"patient@mediapp.com\",\n    \"password\": \"Patient123\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/api/v1/auth/login",

@@ -151,7 +151,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\"\n}"
+              "raw": "{\n    \"email\": \"patient@mediapp.com\",\n    \"password\": \"Patient123\"\n}"
             },
             "url": {
               "raw": "{{security_service_url}}/api/v1/auth/login",
@@ -210,7 +210,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phoneNumber\": \"+1234567890\",\n    \"dateOfBirth\": \"1990-05-15\"\n}"
+              "raw": "{\n    \"email\": \"patient@mediapp.com\",\n    \"password\": \"Patient123\",\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phoneNumber\": \"+1234567890\",\n    \"dateOfBirth\": \"1990-05-15\"\n}"
             },
             "url": {
               "raw": "{{user_service_url}}/api/v1/users/register/patient",
@@ -801,7 +801,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"patient@example.com\",\n    \"password\": \"Password123\"\n}"
+              "raw": "{\n    \"email\": \"patient@mediapp.com\",\n    \"password\": \"Patient123\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/security-service/api/v1/auth/login",
@@ -824,7 +824,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"email\": \"patient2@example.com\",\n    \"password\": \"Password123\",\n    \"firstName\": \"Alice\",\n    \"lastName\": \"Johnson\",\n    \"phoneNumber\": \"+1987654321\",\n    \"dateOfBirth\": \"1985-08-20\"\n}"
+              "raw": "{\n    \"email\": \"patient2@example.com\",\n    \"password\": \"Patient123\",\n    \"firstName\": \"Alice\",\n    \"lastName\": \"Johnson\",\n    \"phoneNumber\": \"+1987654321\",\n    \"dateOfBirth\": \"1985-08-20\"\n}"
             },
             "url": {
               "raw": "{{gateway_url}}/user-service/api/v1/users/register/patient",
