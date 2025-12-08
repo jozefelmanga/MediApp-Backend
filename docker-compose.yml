@@ -1,0 +1,36 @@
+# Docker Compose for local RabbitMQ used by the MediApp services
+# Starts a management-enabled RabbitMQ with a persistent volume.
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  rabbitmq_data:
+
+# Usage notes:
+# - Start RabbitMQ: `docker compose up -d`
+# - Verify: `docker ps` and http://localhost:15672 (guest/guest)
+# - Run services locally (recommended):
+#     cd booking-service && ./mvnw spring-boot:run
+#     cd notification-service && ./mvnw spring-boot:run
+#   Both services will connect to RabbitMQ at localhost:5672.
+# - If you prefer containerized services, I can add service entries
+#   that build each Spring Boot module into images and start them
+#   together with RabbitMQ. Tell me if you want that.

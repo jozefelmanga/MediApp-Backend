@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -32,6 +33,7 @@ public class AppointmentEventPublisher {
      *
      * @param event the event to publish
      */
+    @Async("bookingTaskExecutor")
     public void publishAppointmentCreated(AppointmentCreatedEvent event) {
         log.info("Publishing AppointmentCreatedEvent for appointment: {}", event.getAppointmentId());
         try {
@@ -40,7 +42,8 @@ public class AppointmentEventPublisher {
         } catch (Exception e) {
             log.error("Failed to publish AppointmentCreatedEvent for appointment: {}",
                     event.getAppointmentId(), e);
-            throw new RuntimeException("Failed to publish appointment created event", e);
+            // Swallow exception to avoid failing caller — publishing is best-effort when
+            // async
         }
     }
 
@@ -57,7 +60,7 @@ public class AppointmentEventPublisher {
         } catch (Exception e) {
             log.error("Failed to publish AppointmentCancelledEvent for appointment: {}",
                     event.getAppointmentId(), e);
-            throw new RuntimeException("Failed to publish appointment cancelled event", e);
+            // Swallow exception to avoid failing caller — publishing is best-effort
         }
     }
 }

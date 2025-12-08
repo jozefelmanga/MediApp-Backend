@@ -6,23 +6,6 @@
   ],
   "policies": [],
   "parameters": [],
-  "users": [
-    {
-      "name": "guest",
-      "password_hash": "8ZpRry8dN3vidrj8pU5WDQ/4p9o=",
-      "hashing_algorithm": "rabbit_password_hashing_sha256",
-      "tags": "administrator"
-    }
-  ],
-  "permissions": [
-    {
-      "user": "guest",
-      "vhost": "/",
-      "configure": ".*",
-      "write": ".*",
-      "read": ".*"
-    }
-  ],
   "queues": [
     {
       "name": "notification.queue",
