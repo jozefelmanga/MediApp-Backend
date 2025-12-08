@@ -115,7 +115,38 @@ public class DataSeedConfiguration {
                         log.info("Seeded user account: {} (role={}, authUserId={})",
                                         definition.email(), definition.role(), authResponse.authUserId());
                 } catch (Exception e) {
-                        log.warn("Failed to seed user {}: {}", definition.email(), e.getMessage());
+                        log.warn("Initial register failed for {}: {}. Attempting lookup...", definition.email(),
+                                        e.getMessage());
+                        // Try to lookup existing auth user in security-service and import
+                        try {
+                                SecurityServiceClient.RegisterResponse existing = securityServiceClient
+                                                .lookupUserByEmail(definition.email());
+                                if (existing != null) {
+                                        AppUser user = AppUser.builder()
+                                                        .authUserId(existing.authUserId())
+                                                        .email(definition.email())
+                                                        .firstName(definition.firstName())
+                                                        .lastName(definition.lastName())
+                                                        .role(definition.role())
+                                                        .build();
+                                        AppUser persistedUser = appUserRepository.save(user);
+                                        definition.patientSeed().ifPresent(patientSeed -> {
+                                                PatientProfile profile = PatientProfile.create(
+                                                                persistedUser,
+                                                                patientSeed.phoneNumber(),
+                                                                patientSeed.dateOfBirth());
+                                                patientProfileRepository.save(profile);
+                                        });
+                                        log.info("Imported existing auth user into user-service: {} (authUserId={})",
+                                                        definition.email(), existing.authUserId());
+                                } else {
+                                        log.warn("Failed to seed user {}: no auth user found in security-service",
+                                                        definition.email());
+                                }
+                        } catch (Exception ex) {
+                                log.warn("Failed to seed user {} after lookup attempt: {}", definition.email(),
+                                                ex.getMessage());
+                        }
                 }
         }
 

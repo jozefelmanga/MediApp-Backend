@@ -77,6 +77,32 @@ public class SecurityServiceClient {
     }
 
     /**
+     * Looks up an existing user in the security-service by email. Returns null
+     * if the user is not found.
+     */
+    public RegisterResponse lookupUserByEmail(String email) {
+        try {
+            RegisterResponse response = webClient.get()
+                    .uri(uriBuilder -> uriBuilder.path("/api/v1/auth/lookup").queryParam("email", email).build())
+                    .retrieve()
+                    .bodyToMono(RegisterResponse.class)
+                    .timeout(Duration.ofSeconds(5))
+                    .block();
+
+            return response;
+        } catch (WebClientResponseException.NotFound e) {
+            return null;
+        } catch (WebClientResponseException e) {
+            log.error("Security service error during lookup: status={}, body={}", e.getStatusCode(),
+                    e.getResponseBodyAsString());
+            return null;
+        } catch (Exception e) {
+            log.error("Failed to lookup user in security-service", e);
+            return null;
+        }
+    }
+
+    /**
      * Request payload for registering a user in security-service.
      */
     public record RegisterRequest(String email, String password, String role) {
