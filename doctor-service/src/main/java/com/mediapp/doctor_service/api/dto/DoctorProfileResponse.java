@@ -7,10 +7,13 @@ import lombok.Builder;
  */
 @Builder
 public record DoctorProfileResponse(
-        Long doctorId,
-        Long userId,
-        String medicalLicenseNumber,
-        Integer specialtyId,
-        String specialtyName,
-        String officeAddress) {
+                Long doctorId,
+                Long userId,
+                String medicalLicenseNumber,
+                Integer specialtyId,
+                String specialtyName,
+                String officeAddress,
+                String email,
+                String firstName,
+                String lastName) {
 }

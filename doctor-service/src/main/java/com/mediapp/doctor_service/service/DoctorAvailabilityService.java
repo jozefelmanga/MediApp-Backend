@@ -39,6 +39,7 @@ public class DoctorAvailabilityService {
         private final AvailabilitySlotRepository availabilitySlotRepository;
         private final AvailabilitySlotGenerator slotGenerator;
         private final DoctorMapper doctorMapper;
+        private final com.mediapp.doctor_service.client.UserServiceClient userServiceClient;
         private final Clock clock;
 
         public DoctorAvailabilityService(DoctorProfileRepository doctorProfileRepository,
@@ -46,12 +47,14 @@ public class DoctorAvailabilityService {
                         AvailabilitySlotRepository availabilitySlotRepository,
                         AvailabilitySlotGenerator slotGenerator,
                         DoctorMapper doctorMapper,
+                        com.mediapp.doctor_service.client.UserServiceClient userServiceClient,
                         Clock clock) {
                 this.doctorProfileRepository = doctorProfileRepository;
                 this.specialtyRepository = specialtyRepository;
                 this.availabilitySlotRepository = availabilitySlotRepository;
                 this.slotGenerator = slotGenerator;
                 this.doctorMapper = doctorMapper;
+                this.userServiceClient = userServiceClient;
                 this.clock = clock;
         }
 
@@ -63,7 +66,8 @@ public class DoctorAvailabilityService {
                                                 SpecialtyEntity specialty = specialtyRepository
                                                                 .findById(doctor.getSpecialtyId())
                                                                 .orElse(null);
-                                                return doctorMapper.toDoctorProfileResponse(doctor, specialty);
+                                                var user = userServiceClient.getUserDetails(doctor.getUserId());
+                                                return doctorMapper.toDoctorProfileResponse(doctor, specialty, user);
                                         })
                                         .collect(Collectors.toList());
                 }
@@ -73,7 +77,10 @@ public class DoctorAvailabilityService {
                                 .orElseThrow(() -> new SpecialtyNotFoundException(specialtyId));
 
                 return doctorProfileRepository.findBySpecialtyId(specialtyId).stream()
-                                .map(doctor -> doctorMapper.toDoctorProfileResponse(doctor, specialty))
+                                .map(doctor -> {
+                                        var user = userServiceClient.getUserDetails(doctor.getUserId());
+                                        return doctorMapper.toDoctorProfileResponse(doctor, specialty, user);
+                                })
                                 .collect(Collectors.toList());
         }
 
@@ -84,7 +91,8 @@ public class DoctorAvailabilityService {
                 SpecialtyEntity specialty = specialtyRepository.findById(doctor.getSpecialtyId())
                                 .orElse(null);
 
-                return doctorMapper.toDoctorProfileResponse(doctor, specialty);
+                var user = userServiceClient.getUserDetails(doctor.getUserId());
+                return doctorMapper.toDoctorProfileResponse(doctor, specialty, user);
         }
 
         public List<AvailabilitySlotResponse> getAvailability(Long doctorId, Instant from, Instant to) {

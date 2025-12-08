@@ -8,6 +8,7 @@ import com.mediapp.doctor_service.api.dto.SlotReservationResponse;
 import com.mediapp.doctor_service.domain.AvailabilitySlotEntity;
 import com.mediapp.doctor_service.domain.DoctorProfileEntity;
 import com.mediapp.doctor_service.domain.SpecialtyEntity;
+import com.mediapp.doctor_service.client.UserDetailsDto;
 
 /**
  * Centralized mapping logic between persistence entities and API payloads.
@@ -16,6 +17,11 @@ import com.mediapp.doctor_service.domain.SpecialtyEntity;
 public class DoctorMapper {
 
     public DoctorProfileResponse toDoctorProfileResponse(DoctorProfileEntity doctor, SpecialtyEntity specialty) {
+        return toDoctorProfileResponse(doctor, specialty, null);
+    }
+
+    public DoctorProfileResponse toDoctorProfileResponse(DoctorProfileEntity doctor, SpecialtyEntity specialty,
+            UserDetailsDto user) {
         return DoctorProfileResponse.builder()
                 .doctorId(doctor.getId())
                 .userId(doctor.getUserId())
@@ -23,6 +29,9 @@ public class DoctorMapper {
                 .specialtyId(doctor.getSpecialtyId())
                 .specialtyName(specialty != null ? specialty.getName() : null)
                 .officeAddress(doctor.getOfficeAddress())
+                .email(user != null ? user.email() : null)
+                .firstName(user != null ? user.firstName() : null)
+                .lastName(user != null ? user.lastName() : null)
                 .build();
     }
 
