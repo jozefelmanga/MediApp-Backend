@@ -15,7 +15,7 @@ flowchart TB
     end
 
     subgraph Security["🔐 Security Layer"]
-        SEC["Security Service<br/>:8080<br/>(JWT Authentication)"]
+        SEC["Security Service<br/>:8085<br/>(JWT Authentication)"]
     end
 
     subgraph Discovery["📡 Service Discovery"]
@@ -23,10 +23,10 @@ flowchart TB
     end
 
     subgraph CoreServices["⚙️ Core Microservices"]
-        USER["User Service<br/>:8666<br/>(REST API)"]
-        DOC["Doctor Service<br/>:8083<br/>(REST API)"]
-        BOOK["Booking Service<br/>:8084<br/>(REST API)"]
-        NOTIF["Notification Service<br/>:8667<br/>(RabbitMQ Consumer)"]
+        USER["User Service<br/>:8081<br/>(REST API)"]
+        DOC["Doctor Service<br/>:8082<br/>(REST API)"]
+        BOOK["Booking Service<br/>:8083<br/>(REST API)"]
+        NOTIF["Notification Service<br/>:8084<br/>(RabbitMQ Consumer)"]
     end
 
     subgraph Messaging["📨 Message Broker"]
@@ -177,22 +177,23 @@ erDiagram
     NOTIFICATION_LOG }o--|| APP_USER : recipient
 
     APP_USER {
-        uuid user_id PK
+        bigint user_id PK
+        bigint auth_user_id UNIQUE
         varchar email
-        varchar password_hash
         varchar first_name
         varchar last_name
         enum user_role
     }
 
     PATIENT_PROFILE {
-        uuid patient_id PK_FK
+        bigint patient_id PK_FK
         varchar phone_number
         date date_of_birth
     }
 
     DOCTOR_PROFILE {
-        uuid doctor_id PK_FK
+        bigint doctor_id PK_FK
+        bigint user_id FK
         varchar medical_license_number
         int specialty_id FK
         varchar office_address
@@ -204,18 +205,18 @@ erDiagram
     }
 
     AVAILABILITY_SLOT {
-        uuid slot_id PK
-        uuid doctor_id FK
+        bigint slot_id PK
+        bigint doctor_id FK
         datetime start_time
         datetime end_time
         boolean is_reserved
     }
 
     APPOINTMENT {
-        uuid appointment_id PK
-        uuid patient_id
-        uuid doctor_id
-        uuid slot_id
+        bigint appointment_id PK
+        bigint patient_id
+        bigint doctor_id
+        bigint slot_id
         date appointment_date
         time start_time
         enum status
@@ -223,8 +224,8 @@ erDiagram
     }
 
     NOTIFICATION_LOG {
-        uuid log_id PK
-        uuid recipient_user_id
+        bigint log_id PK
+        bigint recipient_user_id
         enum message_type
         varchar topic
         boolean sent_success
@@ -274,11 +275,11 @@ mindmap
 | ------------------------- | ----- | -------- |
 | Discovery Server (Eureka) | 8761  | HTTP     |
 | Gateway Service           | 8550  | HTTP     |
-| User Service              | 8666  | HTTP     |
-| Doctor Service            | 8083  | HTTP     |
-| Booking Service           | 8084  | HTTP     |
-| Notification Service      | 8667  | HTTP     |
-| Security Service          | 8080  | HTTP     |
+| User Service              | 8081  | HTTP     |
+| Doctor Service            | 8082  | HTTP     |
+| Booking Service           | 8083  | HTTP     |
+| Notification Service      | 8084  | HTTP     |
+| Security Service          | 8085  | HTTP     |
 | MySQL                     | 3306  | TCP      |
 | RabbitMQ                  | 5672  | AMQP     |
 | RabbitMQ Management       | 15672 | HTTP     |
