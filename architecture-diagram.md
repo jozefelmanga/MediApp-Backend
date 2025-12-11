@@ -163,75 +163,6 @@ graph LR
 
 ---
 
-## Database Schema Relationships
-
-```mermaid
-erDiagram
-    APP_USER ||--o| PATIENT_PROFILE : has
-    APP_USER ||--o| DOCTOR_PROFILE : has
-    DOCTOR_PROFILE }o--|| SPECIALTY : belongs_to
-    DOCTOR_PROFILE ||--o{ AVAILABILITY_SLOT : offers
-    AVAILABILITY_SLOT ||--o| APPOINTMENT : reserved_by
-    APPOINTMENT }o--|| APP_USER : patient
-    APPOINTMENT }o--|| DOCTOR_PROFILE : doctor
-    NOTIFICATION_LOG }o--|| APP_USER : recipient
-
-    APP_USER {
-        bigint user_id PK
-        bigint auth_user_id UNIQUE
-        varchar email
-        varchar first_name
-        varchar last_name
-        enum user_role
-    }
-
-    PATIENT_PROFILE {
-        bigint patient_id PK_FK
-        varchar phone_number
-        date date_of_birth
-    }
-
-    DOCTOR_PROFILE {
-        bigint doctor_id PK_FK
-        bigint user_id FK
-        varchar medical_license_number
-        int specialty_id FK
-        varchar office_address
-    }
-
-    SPECIALTY {
-        int specialty_id PK
-        varchar name
-    }
-
-    AVAILABILITY_SLOT {
-        bigint slot_id PK
-        bigint doctor_id FK
-        datetime start_time
-        datetime end_time
-        boolean is_reserved
-    }
-
-    APPOINTMENT {
-        bigint appointment_id PK
-        bigint patient_id
-        bigint doctor_id
-        bigint slot_id
-        date appointment_date
-        time start_time
-        enum status
-        datetime created_at
-    }
-
-    NOTIFICATION_LOG {
-        bigint log_id PK
-        bigint recipient_user_id
-        enum message_type
-        varchar topic
-        boolean sent_success
-        datetime sent_at
-    }
-```
 
 ---
 
@@ -283,3 +214,4 @@ mindmap
 | MySQL                     | 3306  | TCP      |
 | RabbitMQ                  | 5672  | AMQP     |
 | RabbitMQ Management       | 15672 | HTTP     |
+
